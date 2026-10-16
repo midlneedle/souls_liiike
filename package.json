@@ -1,0 +1,29 @@
+{
+  "name": "companion-web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "check:render": "node scripts/check-render.mjs"
+  },
+  "dependencies": {
+    "motion": "12.29.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "three": "file:vendor/three-0.180.0.tgz"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.4",
+    "@vitejs/plugin-react": "4.7.0",
+    "typescript": "5.9.3",
+    "vite": "6.3.6"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  }
+}

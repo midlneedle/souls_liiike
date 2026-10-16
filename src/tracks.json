@@ -1,0 +1,188 @@
+[
+  {
+    "id": "aarne-toxis-nobody",
+    "title": "NOBODY",
+    "artist": "Aarne, ToxiS feat. Big Baby Tape",
+    "cover": "nobody.jpg"
+  },
+  {
+    "id": "arctic-monkeys-do-i-wanna-know",
+    "title": "Do I Wanna Know",
+    "artist": "Arctic Monkeys",
+    "cover": "arctic.jpeg"
+  },
+  {
+    "id": "billie-eilish-chihiro",
+    "title": "CHIHIRO",
+    "artist": "Billie Eilish",
+    "cover": "wildflower.jpeg"
+  },
+  {
+    "id": "billie-eilish-lovely",
+    "title": "lovely",
+    "artist": "Billie Eilish",
+    "cover": "lovely.jpeg"
+  },
+  {
+    "id": "imanu-grabbitz-fire",
+    "title": "Fire",
+    "artist": "IMANU & Grabbitz",
+    "cover": "imanufire.jpeg"
+  },
+  {
+    "id": "justice-neverender",
+    "title": "Neverender",
+    "artist": "Justice feat. Tame Impala",
+    "cover": "neverender.jpg"
+  },
+  {
+    "id": "karim-harlamov-piano-improv-8",
+    "title": "Piano improv 8",
+    "artist": "Karim Harlamov",
+    "cover": "pianoimprov.jpeg"
+  },
+  {
+    "id": "markul-falling-in-love",
+    "title": "Falling in Love",
+    "artist": "Markul",
+    "cover": "falling.jpeg"
+  },
+  {
+    "id": "markul-worst-friend",
+    "title": "Худший друг",
+    "artist": "Markul",
+    "cover": "drug.jpeg"
+  },
+  {
+    "id": "mazoulew-tourist",
+    "title": "Tourist",
+    "artist": "Mazoulew",
+    "cover": "tourist.jpeg"
+  },
+  {
+    "id": "niker-markul-grey-gothic-city",
+    "title": "Город серой готики",
+    "artist": "NIKER, Markul",
+    "cover": "gotic.jpeg"
+  },
+  {
+    "id": "nikola-melnikov-leaden-sky",
+    "title": "Three Years of Leaden Sky",
+    "artist": "Nikola Melnikov",
+    "cover": "leaden-sky.jpg"
+  },
+  {
+    "id": "seekae-test-and-recognise",
+    "title": "Test & Recognise",
+    "artist": "Seekae, Flume",
+    "cover": "testandreckognize.jpeg"
+  },
+  {
+    "id": "sqwoz-bab-tokyo",
+    "title": "TOKYO",
+    "artist": "Sqwoz Bab",
+    "cover": "tokyo.jpg"
+  },
+  {
+    "id": "timis-love-you",
+    "title": "Love You",
+    "artist": "TIMIS",
+    "cover": "timis-love-you.jpg"
+  },
+  {
+    "id": "tame-impala-new-person",
+    "title": "New Person, Same Old Mistakes",
+    "artist": "Tame Impala",
+    "cover": "currents.jpg"
+  },
+  {
+    "id": "tame-impala-let-it-happen",
+    "title": "Let It Happen",
+    "artist": "Tame Impala",
+    "cover": "currents.jpg"
+  },
+  {
+    "id": "twenty-one-pilots-overcompensate",
+    "title": "Overcompensate",
+    "artist": "Twenty One Pilots",
+    "cover": "over.jpeg"
+  },
+  {
+    "id": "inaleryy-cxrgi-lost-my-way",
+    "title": "lost my way",
+    "artist": "inaleryy CXRGI",
+    "cover": "lost.jpeg"
+  },
+  {
+    "id": "billie-eilish-nda",
+    "title": "NDA",
+    "artist": "Billie Eilish",
+    "cover": "nda.jpeg"
+  },
+  {
+    "id": "billie-eilish-wildflower",
+    "title": "WILDFLOWER",
+    "artist": "Billie Eilish",
+    "cover": "wildflower.jpeg"
+  },
+  {
+    "id": "friendly-thug-markul-skyscraper",
+    "title": "Skyscraper",
+    "artist": "FRIENDLY THUG 52 NGG, Markul",
+    "cover": "skyscraper.jpeg"
+  },
+  {
+    "id": "flume-toro-y-moi-the-difference",
+    "title": "The Difference",
+    "artist": "Flume feat. Toro y Moi",
+    "cover": "the-difference.jpg"
+  },
+  {
+    "id": "imanu-hush",
+    "title": "Hush",
+    "artist": "IMANU feat. Kroy",
+    "cover": "imanu-hush.jpg"
+  },
+  {
+    "id": "imanu-rhode-all-too-late",
+    "title": "All Too Late",
+    "artist": "IMANU, Rhode",
+    "cover": "imanu-all-too-late.jpg"
+  },
+  {
+    "id": "justice-generator",
+    "title": "Generator",
+    "artist": "Justice",
+    "cover": "neverender.jpg"
+  },
+  {
+    "id": "justice-one-night-all-night",
+    "title": "One Night/All Night",
+    "artist": "Justice, Tame Impala",
+    "cover": "neverender.jpg"
+  },
+  {
+    "id": "phantogram-celebrating-nothing",
+    "title": "Celebrating Nothing",
+    "artist": "Phantogram",
+    "cover": "phantogram-voices.jpg"
+  },
+  {
+    "id": "tame-impala-borderline",
+    "title": "Borderline",
+    "artist": "Tame Impala",
+    "cover": "slow-rush.jpg"
+  },
+  {
+    "id": "Travis_Scott_-_STARGAZING",
+    "title": "STARGAZING",
+    "artist": "Travis Scott",
+    "cover": "astroworld.jpg"
+  },
+  {
+    "id": "Travis_Scott_-_sicko_mode",
+    "title": "Sicko Мode",
+    "artist": "Travis Scott (ft. Drake)",
+    "cover": "astroworld.jpg"
+  }
+]

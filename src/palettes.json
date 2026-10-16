@@ -1,0 +1,92 @@
+{
+  "billie-rilish" : {
+    "background" : "#003567",
+    "backgroundDark" : "#001427",
+    "backgroundShade" : "#003567",
+    "glowAccent" : "#65B0E4",
+    "surfaceAccent" : "#1F68AC",
+    "wavePause" : "#155EA3",
+    "wavePlay" : "#176CBA"
+  },
+  "favorite" : {
+    "background" : "#43257A",
+    "backgroundDark" : "#170A2E",
+    "backgroundShade" : "#42257A",
+    "glowAccent" : "#BA94FF",
+    "surfaceAccent" : "#6C41BE",
+    "wavePause" : "#764EC2",
+    "wavePlay" : "#8758DD"
+  },
+  "flow-electro" : {
+    "background" : "#391777",
+    "backgroundDark" : "#13052D",
+    "backgroundShade" : "#391777",
+    "glowAccent" : "#B48EF8",
+    "surfaceAccent" : "#6A3FB9",
+    "wavePause" : "#683ABC",
+    "wavePlay" : "#7742D6"
+  },
+  "flow-hiphop" : {
+    "background" : "#7A2804",
+    "backgroundDark" : "#2E0E00",
+    "backgroundShade" : "#7A2804",
+    "glowAccent" : "#EC8F5F",
+    "surfaceAccent" : "#E66832",
+    "wavePause" : "#C25121",
+    "wavePlay" : "#DD5D25"
+  },
+  "indie-louder" : {
+    "background" : "#1D4A7A",
+    "backgroundDark" : "#07192E",
+    "backgroundShade" : "#1D4A7A",
+    "glowAccent" : "#93CFFF",
+    "surfaceAccent" : "#4586CC",
+    "wavePause" : "#427FC2",
+    "wavePlay" : "#4B91DD"
+  },
+  "justice" : {
+    "background" : "#6A240A",
+    "backgroundDark" : "#280B00",
+    "backgroundShade" : "#6A240A",
+    "glowAccent" : "#D1805C",
+    "surfaceAccent" : "#CE6037",
+    "wavePause" : "#A84925",
+    "wavePlay" : "#C0532A"
+  },
+  "markul" : {
+    "background" : "#006761",
+    "backgroundDark" : "#002725",
+    "backgroundShade" : "#006761",
+    "glowAccent" : "#50D1BE",
+    "surfaceAccent" : "#1D9A93",
+    "wavePause" : "#17A39B",
+    "wavePlay" : "#1ABAB1"
+  },
+  "mimic" : {
+    "background" : "#671F0A",
+    "backgroundDark" : "#270900",
+    "backgroundShade" : "#671F0A",
+    "glowAccent" : "#D7805E",
+    "surfaceAccent" : "#C85735",
+    "wavePause" : "#A34124",
+    "wavePlay" : "#BA4B29"
+  },
+  "my-flow" : {
+    "background" : "#01582A",
+    "backgroundDark" : "#002B12",
+    "backgroundShade" : "#004621",
+    "glowAccent" : "#92FF59",
+    "surfaceAccent" : "#00A24E",
+    "wavePause" : "#007E3D",
+    "wavePlay" : "#009048"
+  },
+  "ready-flow-indie" : {
+    "background" : "#1A217A",
+    "backgroundDark" : "#05082E",
+    "backgroundShade" : "#1A217A",
+    "glowAccent" : "#8898FC",
+    "surfaceAccent" : "#444DC7",
+    "wavePause" : "#3E48C2",
+    "wavePlay" : "#4752DD"
+  }
+}

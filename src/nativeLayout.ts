@@ -1,21 +1,23 @@
-// SwiftUI component sizes, fitted to the browser's visible viewport.
-// The native scene's 112px top navigation reserve is absent on this page.
-export function nativeLayout(height:number,safeTop=0,safeBottom=0,bubbleHeight=87){
- const playHeight=196,topLimit=safeTop+16;
+// Preserve the native 160px carousel cards while fitting the Gothic composition.
+export function nativeLayout(height:number,safeTop=0,safeBottom=0){
+ const viewportHeight=Math.max(height,646+safeTop+safeBottom);
+ const bubbleHeight=80;
+ const topLimit=safeTop+16;
+ const miniPlayerTop=viewportHeight-safeBottom-20-64-110;
+ const available=Math.max(0,miniPlayerTop-topLimit);
+ const playHeight=196;
  const compactHeight=bubbleHeight+playHeight+160;
- const miniPlayerTop=height-safeBottom-20-80-64;
- // Safari's browser bars reduce the viewport. Use the prompt's spare space
- // before changing any of the central components' sizes.
- const feedHeight=Math.max(32,Math.min(80,miniPlayerTop-topLimit-compactHeight));
- const contentBottom=miniPlayerTop-feedHeight;
- const available=Math.max(0,contentBottom-topLimit);
- let extra=Math.max(0,available-compactHeight);
- const bottomGap=Math.min(extra,40);extra-=bottomGap;
- const gap=Math.min(extra,24);extra-=gap;
- const growth=Math.min(extra,60);extra-=growth;
+ const extra=Math.max(0,available-compactHeight);
+ // At full height the headline sits lower, like the reference. Safari's bars
+ // consume this breathing room before any artwork needs to become smaller.
+ const topSpace=Math.min(96,extra*.5);
+ const gap=Math.min(24,(extra-topSpace)*.35);
+ const growth=Math.min(20,Math.max(0,extra-topSpace-gap)*.15);
  const carouselHeight=160+growth;
- const contentHeight=bubbleHeight+playHeight+gap+carouselHeight;
- const anchored=contentBottom-bottomGap-contentHeight;
- const contentTop=extra>0?Math.max(topLimit,topLimit+Math.max(0,available-40-contentHeight)*.5):Math.max(topLimit,anchored);
- return {stageTop:contentTop+bubbleHeight,carouselTop:contentTop+bubbleHeight+playHeight+gap,carouselHeight,feedTop:contentBottom,feedHeight,bubbleHeight};
+ const contentTop=topLimit+topSpace;
+ const stageTop=contentTop+bubbleHeight;
+ const carouselTop=stageTop+playHeight+gap;
+ const feedTop=carouselTop+carouselHeight;
+ const feedHeight=Math.max(0,miniPlayerTop-feedTop);
+ return {stageTop,stageScale:1,carouselTop,carouselHeight,feedTop,feedHeight,bubbleHeight};
 }

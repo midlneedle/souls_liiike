@@ -12,7 +12,7 @@ export function createBattleModel({coverMap=null,woodMap=null}={}){
  const bone=new T.MeshLambertMaterial({color:0xb6b18c,flatShading:true});
  const cloth=new T.MeshLambertMaterial({color:0x38332f,flatShading:true,side:T.DoubleSide});
  const silver=new T.MeshLambertMaterial({color:0xc8d8da,flatShading:true});
- const heartMaterial=new T.MeshLambertMaterial({color:0xcf587c,flatShading:true});
+ const heartMaterial=new T.MeshLambertMaterial({color:0xb8b0a3,flatShading:true});
  const gold=new T.MeshLambertMaterial({color:0xad9762,flatShading:true});
  const head=createMimicModel({coverMap,woodMap});head.root.name='track-head';head.root.position.set(0,74,10);head.root.scale.setScalar(.55);boss.add(head.root);
  head.arms.forEach(a=>{a.upperArm.parent.visible=false;});
@@ -122,7 +122,7 @@ export function createBattleModel({coverMap=null,woodMap=null}={}){
    sword.rotation.z+=input.active?-input.x*.8:-horizontal*slash*.95;
   }
   if(won){sword.position.set(0,-112,170);sword.rotation.z=0;heartMaterial.color.setHex(0x7fe3a2);}
-  else{heartMaterial.color.setHex(lost?0x66515e:0xcf587c);}
+  else{heartMaterial.color.setHex(lost?0x66515e:0xb8b0a3);}
   sword.visible=visual.intro>0&&(won?age<.85:!lost||age<.7);
   const spark=event==='parried'||event==='countered'||event==='won';sparkMaterial.opacity=spark?Math.max(0,1-age/.35):0;
   particles.children.forEach((p,i)=>{const angle=i/10*Math.PI*2;p.position.set(Math.cos(angle)*age*190,-15+Math.sin(angle)*age*130,190);p.rotation.z=angle;});

@@ -3,14 +3,15 @@ import type { CSSProperties } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { asset, cardLines, entities, entityTracks, mimicTrack, playLines, replacement } from './data';
 import type { Entity, Track } from './data';
-import { Artwork, Glowie, Icon } from './ui';
+import { Artwork, Glowie, Icon, PlaybackGlyph } from './ui';
 import DuelView from './DuelView';
 import Carousel from './Carousel';
 import {nativeLayout} from './nativeLayout';
-import palettes from './palettes.json';
+import {gothicPalette} from './gothicTheme';
 import NativeSettings from './NativeSettings';
 import NativeSpeech from './NativeSpeech';
 import MiniPlayer from './MiniPlayer';
+import StoneBackground from './StoneBackground';
 import MimicStage from './MimicStage';
 import {MIMIC_TIMING} from './mimic/timing';
 import type {MimicPhase} from './mimic/timing';
@@ -42,7 +43,7 @@ export default function App() {
         mimicTitles[e.id] && !parried.current.has(e.id) ? { ...e, title: mimicTitles[e.id] } : e), selected = resolved[wrap(index)];
     const selectedIDRef=useRef(selected.id);selectedIDRef.current=selected.id;
     const activeEntity = resolved.find(e => e.id === active) ?? resolved[0];
-    const palette=palettes[replaced.has(selected.id)?'mimic':selected.id as keyof typeof palettes];
+    const palette=gothicPalette(replaced.has(selected.id)?'mimic':selected.id);
     const current = (e: Entity) => entityTracks(e)[trackIndices[e.id] ?? 0] ?? entityTracks(e)[0];
     const currentTrack = current(activeEntity), selectedPlaying = playing && active === selected.id;
     const displayMessage = message ?? (replaced.has(selected.id) ? 'Я знал, что тебе это понравится.' : cardLines[selected.id]);
@@ -53,7 +54,7 @@ export default function App() {
     const later = (ms: number, fn: () => void) => { timers.current.push(setTimeout(fn, ms)); };
     const setMimicPhase = (next: MimicPhase) => { if (mimic.current)
         mimic.current.phase = next; setPhase(next); };
-    const taunt = (id: string) => id === 'billie-rilish' ? 'Билли не будет. Попробуй послушать это.' : 'Думал, Justice? Хрен там. Маркул. Вчера тебе зашло — сегодня нечего строить ценителя.';
+    const taunt = (id: string) => id === 'billie-rilish' ? 'Билли не будет. Попробуй послушать это.' : 'Justice? Хрен там. Слушай Маркула.';
     const commit = (source: Entity) => { setReplaced(prev => new Set(prev).add(source.id)); setTrackIndices(p => ({ ...p, [source.id]: 0 })); setActive(source.id); setPlaying(true); };
     const reveal = (source: Entity) => {
         if (locked)
@@ -127,15 +128,15 @@ export default function App() {
         setPlaying(willPlay);
         if (willPlay) {
             if (replaced.has(entity.id))
-                once(`replay-${entity.id}`, `Да, теперь здесь Маркул. Можешь ещё раз нажать Play. ${entity.id === 'justice' ? 'Justice' : 'Билли'} от этого не появится.`);
+                once(`replay-${entity.id}`, `Да, это Маркул. ${entity.id === 'justice' ? 'Justice' : 'Билли'} не будет.`);
             else if (playLines[entity.id])
                 once(`play-${entity.id}`, playLines[entity.id], 3000);
         }
         else
-            once('pause', 'Пауза. Первая здравая мысль за сегодня.');
+            once('pause', 'Пауза. Наконец-то здравая мысль.');
     };
     const save = (track: Track | undefined) => { if (!track || saved.has(track.id) || locked)
-        return; setQueue(null); setFeed(false); say('Думал, сердечко нажал — и трек твой? Держи покрепче.'); setChallenge(track); };
+        return; setQueue(null); setFeed(false); say('Сохранить? Сначала отбей.'); setChallenge(track); };
     const won = () => {
         if (!challenge)
             return;
@@ -144,10 +145,10 @@ export default function App() {
             jokes.current.add('invader');
             const enemy = entityTracks(entities[1]).find(t => t.id !== challenge.id && !saved.has(t.id));
             setGift(enemy ?? null);
-            say('Отвоевал трек? Недруг уже подкинул свой в твою очередь. Чтобы не расслаблялся.');
+            say('Сохранил свой? Недруг подкинул ещё.');
         }
         else
-            say('Сохранено. Теперь за это стыдно официально.');
+            say('Сохранено. Теперь стыдно официально.');
     };
     const blockedSwipe = () => { skipAttempts.current++; const n = skipAttempts.current; if (n === 1)
         once('skip1', 'Ты сам это включил. Что ж, теперь слушай.', 0);
@@ -156,16 +157,16 @@ export default function App() {
     else if (n >= 6)
         once('skip6', 'А включал как уверенно.'); };
     const setMoodSelection = (value: string) => { setMood(value); const now = performance.now(); moodTimes.current = moodTimes.current.filter(t => now - t < 60000).concat(now); if (moodTimes.current.length >= 3)
-        once('moods', 'Третье настроение за минуту. Тебе плейлист или уже экзорциста?'); };
-    return <main ref={appRef} className="app" data-compact-feed={layout.feedHeight<64} style={{'--accent':palette.glowAccent,'--background':palette.background,'--background-dark':palette.backgroundDark,'--surface':palette.surfaceAccent,'--wave-play':palette.wavePlay,'--wave-pause':palette.wavePause,'--stage-top':`${layout.stageTop}px`,'--carousel-top':`${layout.carouselTop}px`,'--carousel-height':`${layout.carouselHeight}px`,'--feed-top':`${layout.feedTop}px`,'--feed-height':`${layout.feedHeight}px`,'--bubble-height':`${layout.bubbleHeight}px`,'--cover-size':selectedPlaying?'200px':'172px','--cover-inset':selectedPlaying?'6px':'12px'} as CSSProperties}>
-  <div className="ambient" aria-hidden="true"/>
+        once('moods', 'Третье настроение. Зови экзорциста.'); };
+    return <main ref={appRef} className="app" data-compact-feed={layout.feedHeight<64} style={{'--accent':palette.glowAccent,'--background':palette.background,'--background-dark':palette.backgroundDark,'--surface':palette.surfaceAccent,'--wave-play':palette.wavePlay,'--wave-pause':palette.wavePause,'--stage-top':`${layout.stageTop}px`,'--stage-scale':layout.stageScale,'--carousel-top':`${layout.carouselTop}px`,'--carousel-height':`${layout.carouselHeight}px`,'--feed-top':`${layout.feedTop}px`,'--feed-height':`${layout.feedHeight}px`,'--bubble-height':`${layout.bubbleHeight}px`,'--cover-size':selectedPlaying?'200px':'172px','--cover-inset':selectedPlaying?'6px':'12px'} as CSSProperties}>
+  <StoneBackground/>
   <motion.div className={`companion ${challenge?'duel-active':''}`} inert={settings||!!queue} animate={{opacity:feed?0:1}} style={{ pointerEvents: challenge || feed ? 'none' : undefined }}>
    <div className={`speech ${locked?'concealed':''}`}><NativeSpeech text={displayMessage}/></div>
    <div className={`stage ${mimic3DActive&&locked?'mimic-running':''}`}>
     {['justice','billie-rilish'].includes(selected.id)&&<MimicStage sourceURL={asset(entities[wrap(index)].cover!)} replacementURL={asset(mimicTrack.cover!)} round={entities[wrap(index)].kind==='artist'} phase={mimic3DActive?phase:'idle'} active={mimic3DActive&&locked} size={selectedPlaying?200:172} reduced={!!reduced} onReady={ready=>{setMimicReady(ready);if(!ready)setMimic3DActive(false);}}/>}
-    {selected.id === 'my-flow' ? <div className="my-flow-stage"><div className="flow-play-aura"/><button className="main-play flow-play" aria-label={selectedPlaying ? 'Пауза' : 'Включить Мой Поток'} onClick={() => play()} disabled={locked}><Icon name={selectedPlaying ? 'pause' : 'play'} size={48}/></button><button className="settings-pill" onClick={() => setSettings(true)}>{mood === 'Любое' && genre === 'Любой' ? 'Настроить' : `${mood === 'Любое' ? 'Мой' : mood} · ${genre === 'Любой' ? 'Поток' : genre}`}</button></div> : <>
+    {selected.id === 'my-flow' ? <div className="my-flow-stage"><div className="flow-play-aura"/><button className="main-play flow-play" aria-label={selectedPlaying ? 'Пауза' : 'Включить Мой Поток'} onClick={() => play()} disabled={locked}><PlaybackGlyph playing={selectedPlaying} size={48}/></button></div> : <>
      <motion.div className="cover-shell" animate={{ scale: reduced ? 1 : phase === 'warning' ? 1.035 : phase === 'vanishing' ? .76 : phase === 'appearing' ? .64 : 1, rotate: reduced ? 0 : phase === 'warning' ? -3 : 0, opacity: phase === 'vanishing' || phase === 'appearing' ? 0 : 1, filter: `brightness(${phase === 'warning' ? 1.2 : 1})`, y: !reduced && phase === 'appearing' ? 24 : 0 }} transition={phase === 'settled' ? { ...spring } : { duration: .22 }}><div className="native-cover"><Artwork entity={selected}/></div></motion.div>
-     <button className="main-play cover-play" aria-label={selectedPlaying ? 'Пауза' : `Включить ${selected.title}`} disabled={locked} onClick={() => play()}><Icon name={selectedPlaying ? 'pause' : 'play'} size={38.4}/></button>
+     <button className="main-play cover-play" aria-label={selectedPlaying ? 'Пауза' : `Включить ${selected.title}`} disabled={locked} onClick={() => play()}><PlaybackGlyph playing={selectedPlaying} size={38.4}/></button>
      {phase === 'warning' && <button className="parry-target" aria-label="Парировать мимика" onPointerDown={e => { e.preventDefault(); parryMimic(); }} onClick={parryMimic}/>}
     </>}
    </div>
@@ -174,7 +175,7 @@ export default function App() {
   </motion.div>
   <div className={`bottom-ui ${challenge ? 'dimmed' : ''}`} inert={!!challenge || locked || settings || !!queue}>
    <MiniPlayer tracks={entityTracks(activeEntity)} currentIndex={trackIndices[activeEntity.id]??0} playing={playing} saved={saved} showsHeart={!challenge} onPlay={()=>play(activeEntity)} onSave={save} onSwipeAttempt={blockedSwipe}/>
-   <nav className="dock" aria-label="Основная навигация"><button aria-current="page"><Icon name="ic_home"/><span>Главная</span></button><button><Icon name="ic_catalog"/><span>Каталог</span></button><button><img src={asset('avatar.png')} alt=""/><span>Моё</span></button></nav>
+   <nav className="dock" aria-label="Основная навигация"><button aria-current="page"><Icon name="ic_home"/><span>Главная</span></button><button><Icon name="ic_catalog"/><span>Каталог</span></button><button><Icon name="profile"/><span>Моё</span></button></nav>
   </div>
   <AnimatePresence>{challenge && <DuelView key={challenge.id} track={challenge} onSaved={won} onClose={() => setChallenge(null)}/>}</AnimatePresence>
   <AnimatePresence>{feed&&<motion.section className="feed" initial={{y:'100%'}} animate={{y:0}} exit={{y:'100%'}} transition={{duration:.55,ease:[.2,0,0,1]}} aria-label="Больше для вас"><button className="feed-shortcut" aria-label="Вернуться к компаньону" onClick={()=>setFeed(false)}><i/><i/><span><Artwork entity={selected} small/></span></button><div className="feed-grid">{Array.from({length:16},(_,i)=><div key={i}/>)}</div></motion.section>}</AnimatePresence>

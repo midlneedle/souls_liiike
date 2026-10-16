@@ -11,6 +11,7 @@
     "check:render": "node scripts/check-render.mjs"
   },
   "dependencies": {
+    "dialkit": "file:vendor/dialkit-2.0.2.tgz",
     "motion": "12.29.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",

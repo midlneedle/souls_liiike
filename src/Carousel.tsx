@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import palettes from './palettes.json';
+import {gothicPalette} from './gothicTheme';
 import { animate, motion, useMotionValue, useMotionValueEvent, useTransform } from 'motion/react';
 import type { MotionValue, MotionStyle } from 'motion/react';
 import type { Entity } from './data';
@@ -8,12 +8,14 @@ import { Artwork, Icon } from './ui';
 import { CAROUSEL_STEP, cardGeometry, snapDelta, springForDistance, nearestVirtualIndex } from './carouselGeometry';
 
 function bottomShape(){
- const pts=['M 0 0','L 1 0','L 1 .65'];
- for(let i=1;i<=12;i++){const a=i/12*Math.PI/2;pts.push(`L ${.65+.35*Math.pow(Math.cos(a),.5)} ${.65+.35*Math.pow(Math.sin(a),.5)}`);}
- pts.push('L .35 1');
- for(let i=1;i<=12;i++){const a=Math.PI/2+i/12*Math.PI/2;pts.push(`L ${.35-.35*Math.pow(Math.abs(Math.cos(a)),.5)} ${.65+.35*Math.pow(Math.abs(Math.sin(a)),.5)}`);}
+ const radius=24/160,edge=1-radius;
+ const pts=['M 0 0','L 1 0',`L 1 ${edge}`];
+ for(let i=1;i<=12;i++){const a=i/12*Math.PI/2;pts.push(`L ${edge+radius*Math.pow(Math.cos(a),.5)} ${edge+radius*Math.pow(Math.sin(a),.5)}`);}
+ pts.push(`L ${radius} 1`);
+ for(let i=1;i<=12;i++){const a=Math.PI/2+i/12*Math.PI/2;pts.push(`L ${radius-radius*Math.pow(Math.abs(Math.cos(a)),.5)} ${edge+radius*Math.pow(Math.abs(Math.sin(a)),.5)}`);}
  return pts.join(' ')+' Z';
 }
+
 export default function Carousel({entities,index,active,playing,disabled,onFocus,onQueue}:{entities:Entity[];index:number;active:string|null;playing:boolean;disabled:boolean;onFocus:(index:number)=>void;onQueue:(entity:Entity)=>void}) {
  const [anchor,setAnchor]=useState(index),[focused,setFocused]=useState(index),[width,setWidth]=useState(390);
  const root=useRef<HTMLDivElement>(null);
@@ -51,11 +53,12 @@ export default function Carousel({entities,index,active,playing,disabled,onFocus
  </div>;
 }
 function CarouselCard({entity,virtualIndex,position,focused,selected,active,playing,onSelect,onQueue}:{entity:Entity;virtualIndex:number;position:MotionValue<number>;focused:boolean;selected:boolean;active:boolean;playing:boolean;onSelect:()=>void;onQueue:()=>void}){
+ const keepsArtwork=!!entity.cover&&(entity.kind==='flow'||entity.id==='favorite');
  const x=useTransform(position,p=>cardGeometry(virtualIndex,p).offset),scale=useTransform(position,p=>cardGeometry(virtualIndex,p).scale),rotate=useTransform(position,p=>cardGeometry(virtualIndex,p).rotation),compensation=useTransform(position,p=>cardGeometry(virtualIndex,p).compensation);
- return <motion.div className={`entity-card ${focused?'focused':''}`} initial={false} style={{x,scale,rotate,zIndex:100-Math.abs(virtualIndex-Math.round(position.get()/154)),'--entity-accent':palettes[entity.id as keyof typeof palettes]?.glowAccent} as MotionStyle}>
+ return <motion.div className={`entity-card ${focused?'focused':''}`} initial={false} style={{x,scale,rotate,zIndex:100-Math.abs(virtualIndex-Math.round(position.get()/154)),'--entity-accent':gothicPalette(entity.id).glowAccent} as MotionStyle}>
   <div className="native-card-background"><span style={{maskImage:`url("${asset('ToothGlow.png')}")`,WebkitMaskImage:`url("${asset('ToothGlow.png')}")`}}/></div>
   <button className="entity-select" aria-label={`Выбрать ${entity.title}`} aria-current={focused?'true':undefined} onClick={e=>{if(e.detail===0)onSelect();}} tabIndex={focused?0:-1}>
-   <motion.span className={`entity-thumbnail ${selected&&entity.id!=='my-flow'?'queue-selected':''} ${entity.kind==='artist'?'round':''}`} style={{scale:compensation}}><span className="thumbnail-art"><Artwork entity={entity} small/></span>{entity.id!=='my-flow'&&<span className={`thumbnail-action ${entity.kind==='flow'?'tuner':''}`}>{entity.kind==='flow'?<svg width="32" height="32" viewBox="0 0 32 32"><g fill="currentColor">{[6,16,26].flatMap(y=>[6,16,26].map(x=><circle key={`${x}-${y}`} cx={x} cy={y} r="1.5"/>))}</g><circle cx="16" cy="16" r="5" fill="currentColor"/></svg>:<Icon name="Queue"/>}</span>}{active&&!selected&&<span className={`equalizer ${playing?'':'paused'}`}><i/><i/><i/><i/></span>}</motion.span>
+   <motion.span className={`entity-thumbnail ${selected&&entity.id!=='my-flow'&&!keepsArtwork?'queue-selected':''} ${entity.kind==='artist'?'round':''}`} style={{scale:compensation}}><span className="thumbnail-art"><Artwork entity={entity} small/></span>{entity.id!=='my-flow'&&<span className={`thumbnail-action ${entity.kind==='flow'?'tuner':''}`}>{entity.kind==='flow'?<svg width="32" height="32" viewBox="0 0 32 32"><g fill="currentColor">{[6,16,26].flatMap(y=>[6,16,26].map(x=><circle key={`${x}-${y}`} cx={x} cy={y} r="1.5"/>))}</g><circle cx="16" cy="16" r="5" fill="currentColor"/></svg>:<Icon name="Queue"/>}</span>}{active&&!selected&&<span className={`equalizer ${playing?'':'paused'}`}><i/><i/><i/><i/></span>}</motion.span>
    <motion.span className="entity-title" style={{scale:compensation}}>{entity.title}</motion.span>
   </button>
   {selected&&entity.id!=='my-flow'&&<button className="queue-trigger" aria-label={`Очередь: ${entity.title}`} onClick={e=>{if(e.detail===0)onQueue();}}/>}

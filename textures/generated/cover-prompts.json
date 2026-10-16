@@ -1,0 +1,45 @@
+{
+  "tool": "Built-in image_gen",
+  "assets": [
+    {
+      "file": "../../public/assets/flow-indie.webp",
+      "source": "source/flow-indie.png",
+      "prompt": "Use case: stylized-concept. Production square cover artwork for a Gothic music collection, one coherent set matching the supplied three style references: weathered silver insignia, chipped stone heart, black rough stone background. A single large, centered, bold and readable sculpted emblem made of antique blackened silver and dark stone, restrained Gothic thorn details, tactile worn edges, frontal view with shallow dimensional relief. Opaque full-bleed square cover, no transparency, NO rounded corners baked in. The emblem occupies about 65 percent of the square with generous safe margins. Behind it, a beautiful muted colored atmospheric gradient over grainy black stone, subtly brighter behind the emblem and falling into charcoal edges. Fine physical texture, dark fantasy inventory icon aesthetic, like a designed album cover, NOT a game screenshot. Clear silhouette at 56px. NO text, NO letters, NO logos, NO numbers, NO people, NO mockup UI, NO frame surrounding the whole canvas, NO vivid neon, NO pixelation. Preserve a consistent composition, material, lighting and scale across the set. Emblem: one vintage electric guitar fashioned as a silver Gothic reliquary, gently tilted 12 degrees, simple recognizable guitar body and neck, a few delicate thorns around the body. Background gradient: dusty plum, stormy lavender and deep charcoal, soft muted violet light.",
+      "references": [
+        "../Flow_icon.webp",
+        "../likee.webp",
+        "../background.webp"
+      ]
+    },
+    {
+      "file": "../../public/assets/flow-electro.webp",
+      "source": "source/flow-electro.png",
+      "prompt": "Use case: stylized-concept. Production square cover artwork for a Gothic music collection, one coherent set matching the supplied three style references: weathered silver insignia, chipped stone heart, black rough stone background. A single large, centered, bold and readable sculpted emblem made of antique blackened silver and dark stone, restrained Gothic thorn details, tactile worn edges, frontal view with shallow dimensional relief. Opaque full-bleed square cover, no transparency, NO rounded corners baked in. The emblem occupies about 65 percent of the square with generous safe margins. Behind it, a beautiful muted colored atmospheric gradient over grainy black stone, subtly brighter behind the emblem and falling into charcoal edges. Fine physical texture, dark fantasy inventory icon aesthetic, like a designed album cover, NOT a game screenshot. Clear silhouette at 56px. NO text, NO letters, NO logos, NO numbers, NO people, NO mockup UI, NO frame surrounding the whole canvas, NO vivid neon, NO pixelation. Preserve a consistent composition, material, lighting and scale across the set. Emblem: one bold sculpted zigzag lightning bolt held by a simple blackened-silver circular halo with tiny Gothic points, feels like a weathered medieval storm talisman. Background gradient: steel blue and desaturated cobalt into deep charcoal, soft cold blue light. No futuristic electronics.",
+      "references": [
+        "../Flow_icon.webp",
+        "../likee.webp",
+        "../background.webp"
+      ]
+    },
+    {
+      "file": "../../public/assets/flow-hiphop.webp",
+      "source": "source/flow-hiphop.png",
+      "prompt": "Use case: stylized-concept. Production square cover artwork for a Gothic music collection, one coherent set matching the supplied three style references: weathered silver insignia, chipped stone heart, black rough stone background. A single large, centered, bold and readable sculpted emblem made of antique blackened silver and dark stone, restrained Gothic thorn details, tactile worn edges, frontal view with shallow dimensional relief. Opaque full-bleed square cover, no transparency, NO rounded corners baked in. The emblem occupies about 65 percent of the square with generous safe margins. Behind it, a beautiful muted colored atmospheric gradient over grainy black stone, subtly brighter behind the emblem and falling into charcoal edges. Fine physical texture, dark fantasy inventory icon aesthetic, like a designed album cover, NOT a game screenshot. Clear silhouette at 56px. NO text, NO letters, NO logos, NO numbers, NO people, NO mockup UI, NO frame surrounding the whole canvas, NO vivid neon, NO pixelation. Preserve a consistent composition, material, lighting and scale across the set. Emblem: one old-fashioned upright studio microphone with a small simple angular silver crown resting above its grille, unified as a Gothic silver relic. Strong readable microphone silhouette, no base stand extending beyond emblem. Background gradient: copper amber and dark burnt orange into charcoal, subdued warm light.",
+      "references": [
+        "../Flow_icon.webp",
+        "../likee.webp",
+        "../background.webp"
+      ]
+    },
+    {
+      "file": "../../public/assets/favorite-gothic.webp",
+      "source": "source/favorite.png",
+      "prompt": "Use case: stylized-concept. Production square cover artwork for a Gothic music collection, one coherent set matching the supplied three style references: weathered silver insignia, chipped stone heart, black rough stone background. A single large, centered, bold and readable sculpted emblem made of antique blackened silver and dark stone, restrained Gothic thorn details, tactile worn edges, frontal view with shallow dimensional relief. Opaque full-bleed square cover, no transparency, NO rounded corners baked in. The emblem occupies about 65 percent of the square with generous safe margins. Behind it, a beautiful muted colored atmospheric gradient over grainy black stone, subtly brighter behind the emblem and falling into charcoal edges. Fine physical texture, dark fantasy inventory icon aesthetic, like a designed album cover, NOT a game screenshot. Clear silhouette at 56px. NO text, NO letters, NO logos, NO numbers, NO people, NO mockup UI, NO frame surrounding the whole canvas, NO vivid neon, NO pixelation. Preserve a consistent composition, material, lighting and scale across the set. Emblem: one broad chipped stone heart with worn silver edges and a few small Gothic thorns wrapping around its perimeter, recognizable simple heart silhouette, like the heart style reference but more dimensional. Background gradient: deep wine red and dusty crimson into charcoal, subdued red light. No blood, no gore.",
+      "references": [
+        "../Flow_icon.webp",
+        "../likee.webp",
+        "../background.webp"
+      ]
+    }
+  ]
+}

@@ -1,9 +1,14 @@
 import { iconURL, asset } from './data';
 import type { Entity } from './data';
+import {texturedIcons} from './gothicAssets';
+export function PlaybackGlyph({playing,size=24}:{playing:boolean;size?:number}){
+    return <span className="playback-glyph" style={{width:size,height:size}} aria-hidden="true"><span className={playing?'glyph-hidden':''}><Icon name="play" size={size}/></span><span className={playing?'':'glyph-hidden'}><Icon name="pause" size={size}/></span></span>;
+}
 export function Icon({ name, size = 24 }: {
     name: string;
     size?: number;
 }) {
+    if(texturedIcons[name])return <img className={`texture-icon texture-${name}`} src={texturedIcons[name]} width={size} height={size} alt="" aria-hidden="true" draggable={false}/>;
     if(name==='play')return <Icon name="Play" size={size}/>;
     if(name==='pause')return <Icon name="Pause" size={size}/>;
     if(name==='heart')return <Icon name="Like" size={size}/>;

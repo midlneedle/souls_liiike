@@ -3,7 +3,6 @@ import type {PointerEvent} from 'react';
 import {animate,motion,useMotionValue} from 'motion/react';
 import type {Track} from './data';
 import {Icon,PlaybackGlyph} from './ui';
-import MetalGlint from './MetalGlint';
 
 // Textured player: 78px cards inside a 110px frame, 18px side insets, 8px between cards.
 // Gesture competes with button taps only after the native 18px drag threshold.
@@ -27,10 +26,9 @@ export default function MiniPlayer({tracks,currentIndex,playing,saved,showsHeart
    const track=tracks[((currentIndex+offset)%tracks.length+tracks.length)%tracks.length];
    const active=offset===0;
    return <div key={offset} className={`mini-card ${active?'current':''}`} style={{left:`calc(${offset*100}% + ${offset*8}px)`}} aria-hidden={!active}>
-    {active&&<MetalGlint/>}
     <div className="mini-title"><strong>{track?.title??'Трек не выбран'}</strong><span>{track?.artist??'—'}</span></div>
-    <button className={`save-button ${track&&saved.has(track.id)?'saved':''}`} tabIndex={active?0:-1} disabled={!active||!track} aria-label={track&&saved.has(track.id)?'Трек сохранён':'Сохранить трек'} onClick={()=>{if(track)onSave(track);}}>{active&&showsHeart?<motion.span layoutId="save-heart"><Icon name="heart"/></motion.span>:<span style={{visibility:active?'hidden':'visible'}}><Icon name="heart"/></span>}</button>
-    <button className="mini-play" tabIndex={active?0:-1} disabled={!active} aria-label={active&&playing?'Пауза':'Воспроизвести'} onClick={onPlay}><PlaybackGlyph playing={active&&playing} size={24}/></button>
+    <button className={`save-button ${track&&saved.has(track.id)?'saved':''}`} tabIndex={active?0:-1} disabled={!active||!track} aria-label={track&&saved.has(track.id)?'Трек сохранён':'Сохранить трек'} onClick={()=>{if(track)onSave(track);}}>{active&&showsHeart?<motion.span layoutId="save-heart"><Icon name="heart" whiteMask/></motion.span>:<span style={{visibility:active?'hidden':'visible'}}><Icon name="heart" whiteMask/></span>}</button>
+    <button className="mini-play" tabIndex={active?0:-1} disabled={!active} aria-label={active&&playing?'Пауза':'Воспроизвести'} onClick={onPlay}><PlaybackGlyph playing={active&&playing} size={24} whiteMask/></button>
    </div>;
   })}</motion.div>
  </div>;

@@ -1,0 +1,11 @@
+{
+  "tool": "Built-in image_gen",
+  "asset": "queue_icon.webp",
+  "prompt": "Use case: stylized-concept. Asset type: one production raster icon for a Gothic music player's QUEUE button. Input images are STYLE REFERENCES ONLY: image 1 is the existing My Flow emblem, image 2 the existing Pause icon. Create a NEW queue glyph in exactly this material family: three separated horizontal bars stacked vertically, each made of chipped charcoal stone inset into worn blackened silver Gothic metal edges. Front-on orthographic view, simple strong readable silhouette at 30px, restrained beveled silver highlights and rough tactile grain like the references. Three bars of equal length, clear transparent gaps, compact balanced square composition, generous transparent safe padding. Small pointed Gothic bevels at bar ends, subtle material detail, not flat geometric white SVG. Dark gray stone faces and tarnished silver edging; no pure-white fill. Transparent background with true alpha. NO surrounding circle or frame, NO white disc (the live UI supplies a white circular button separately), no letters, no numbers, no bullets, no musical note, no play triangle, no extra ornament outside the three bars, no colored glow, no backdrop or shadow cloud. Return a single isolated icon.",
+  "references": [
+    "Flow_icon.webp",
+    "pause_icon.webp"
+  ],
+  "source": "source/queue-icon.png",
+  "conversion": "Lossless WebP, crop 160 256 960 768, resize width 256, preserve alpha"
+}

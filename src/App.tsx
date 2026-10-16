@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import {useDialKit} from 'dialkit';
 import { asset, cardLines, entities, entityTracks, mimicTrack, playLines, replacement } from './data';
 import type { Entity, Track } from './data';
 import { Artwork, Glowie, Icon, PlaybackGlyph } from './ui';
@@ -12,6 +13,7 @@ import NativeSettings from './NativeSettings';
 import NativeSpeech from './NativeSpeech';
 import MiniPlayer from './MiniPlayer';
 import StoneBackground from './StoneBackground';
+import MetalGlint from './MetalGlint';
 import MimicStage from './MimicStage';
 import {MIMIC_TIMING} from './mimic/timing';
 import type {MimicPhase} from './mimic/timing';
@@ -19,6 +21,13 @@ import type {MimicPhase} from './mimic/timing';
 const wrap = (n: number) => ((n % entities.length) + entities.length) % entities.length;
 const spring = { type: 'spring' as const, stiffness: 230, damping: 26 };
 export default function App() {
+    const iconLight=useDialKit('Белые маски иконок',{
+        opacity:[.45,0,1,.01],
+    },{persist:{key:'companion:icon-white:v2',storage:'localStorage'}});
+    const coverPlay=useDialKit('Play рядом с обложкой',{
+        rimSize:[126,100,160,.5],
+        playOffsetX:[0,-12,12,.5],
+    },{persist:{key:'companion:cover-play:v1',storage:'localStorage'}});
     const [index, setIndex] = useState(0), [active, setActive] = useState<string | null>(null), [playing, setPlaying] = useState(false);
     const [replaced, setReplaced] = useState<Set<string>>(new Set()), [trackIndices, setTrackIndices] = useState<Record<string, number>>({});
     const [mimicReady,setMimicReady]=useState(false),[mimic3DActive,setMimic3DActive]=useState(false);
@@ -158,8 +167,9 @@ export default function App() {
         once('skip6', 'А включал как уверенно.'); };
     const setMoodSelection = (value: string) => { setMood(value); const now = performance.now(); moodTimes.current = moodTimes.current.filter(t => now - t < 60000).concat(now); if (moodTimes.current.length >= 3)
         once('moods', 'Третье настроение. Зови экзорциста.'); };
-    return <main ref={appRef} className="app" data-compact-feed={layout.feedHeight<64} style={{'--accent':palette.glowAccent,'--background':palette.background,'--background-dark':palette.backgroundDark,'--surface':palette.surfaceAccent,'--wave-play':palette.wavePlay,'--wave-pause':palette.wavePause,'--stage-top':`${layout.stageTop}px`,'--stage-scale':layout.stageScale,'--carousel-top':`${layout.carouselTop}px`,'--carousel-height':`${layout.carouselHeight}px`,'--feed-top':`${layout.feedTop}px`,'--feed-height':`${layout.feedHeight}px`,'--bubble-height':`${layout.bubbleHeight}px`,'--cover-size':selectedPlaying?'200px':'172px','--cover-inset':selectedPlaying?'6px':'12px'} as CSSProperties}>
+    return <main ref={appRef} className="app" data-compact-feed={layout.feedHeight<64} style={{'--cover-play-rim-size':`${coverPlay.rimSize}%`,'--cover-play-icon-x':`${coverPlay.playOffsetX}px`,'--icons-white':iconLight.opacity,'--accent':palette.glowAccent,'--background':palette.background,'--background-dark':palette.backgroundDark,'--surface':palette.surfaceAccent,'--wave-play':palette.wavePlay,'--wave-pause':palette.wavePause,'--stage-top':`${layout.stageTop}px`,'--stage-scale':layout.stageScale,'--carousel-top':`${layout.carouselTop}px`,'--carousel-height':`${layout.carouselHeight}px`,'--feed-top':`${layout.feedTop}px`,'--feed-height':`${layout.feedHeight}px`,'--bubble-height':`${layout.bubbleHeight}px`,'--cover-size':selectedPlaying?'200px':'172px','--cover-inset':selectedPlaying?'6px':'12px'} as CSSProperties}>
   <StoneBackground/>
+  <MetalGlint/>
   <motion.div className={`companion ${challenge?'duel-active':''}`} inert={settings||!!queue} animate={{opacity:feed?0:1}} style={{ pointerEvents: challenge || feed ? 'none' : undefined }}>
    <div className={`speech ${locked?'concealed':''}`}><NativeSpeech text={displayMessage}/></div>
    <div className={`stage ${mimic3DActive&&locked?'mimic-running':''}`}>
@@ -175,7 +185,7 @@ export default function App() {
   </motion.div>
   <div className={`bottom-ui ${challenge ? 'dimmed' : ''}`} inert={!!challenge || locked || settings || !!queue}>
    <MiniPlayer tracks={entityTracks(activeEntity)} currentIndex={trackIndices[activeEntity.id]??0} playing={playing} saved={saved} showsHeart={!challenge} onPlay={()=>play(activeEntity)} onSave={save} onSwipeAttempt={blockedSwipe}/>
-   <nav className="dock" aria-label="Основная навигация"><button aria-current="page"><Icon name="ic_home"/><span>Главная</span></button><button><Icon name="ic_catalog"/><span>Каталог</span></button><button><Icon name="profile"/><span>Моё</span></button></nav>
+   <nav className="dock" aria-label="Основная навигация"><button aria-current="page"><Icon name="ic_home" whiteMask/><span>Главная</span></button><button><Icon name="ic_catalog" whiteMask/><span>Каталог</span></button><button><Icon name="profile" whiteMask/><span>Моё</span></button></nav>
   </div>
   <AnimatePresence>{challenge && <DuelView key={challenge.id} track={challenge} onSaved={won} onClose={() => setChallenge(null)}/>}</AnimatePresence>
   <AnimatePresence>{feed&&<motion.section className="feed" initial={{y:'100%'}} animate={{y:0}} exit={{y:'100%'}} transition={{duration:.55,ease:[.2,0,0,1]}} aria-label="Больше для вас"><button className="feed-shortcut" aria-label="Вернуться к компаньону" onClick={()=>setFeed(false)}><i/><i/><span><Artwork entity={selected} small/></span></button><div className="feed-grid">{Array.from({length:16},(_,i)=><div key={i}/>)}</div></motion.section>}</AnimatePresence>

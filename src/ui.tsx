@@ -1,13 +1,26 @@
 import { iconURL, asset } from './data';
 import type { Entity } from './data';
 import {texturedIcons} from './gothicAssets';
-export function PlaybackGlyph({playing,size=24}:{playing:boolean;size?:number}){
-    return <span className="playback-glyph" style={{width:size,height:size}} aria-hidden="true"><span className={playing?'glyph-hidden':''}><Icon name="play" size={size}/></span><span className={playing?'':'glyph-hidden'}><Icon name="pause" size={size}/></span></span>;
+import type {CSSProperties} from 'react';
+import {useEffect} from 'react';
+import {animate,motion,useMotionValue,useReducedMotion,useTransform} from 'motion/react';
+import {PLAY_PAUSE_SPRING,playAmount,pauseAmount} from './playbackTransition';
+export function PlaybackGlyph({playing,size=24,whiteMask=false}:{playing:boolean;size?:number;whiteMask?:boolean}){
+    const progress=useMotionValue(playing?1:0),reduced=useReducedMotion();
+    const play=useTransform(progress,playAmount),pause=useTransform(progress,pauseAmount);
+    useEffect(()=>{
+        if(reduced){progress.jump(playing?1:0);return;}
+        const animation=animate(progress,playing?1:0,PLAY_PAUSE_SPRING);
+        return()=>animation.stop();
+    },[playing,reduced,progress]);
+    return <span className="playback-glyph" style={{width:size,height:size}} aria-hidden="true"><motion.span style={{scale:play,opacity:play}}><Icon name="play" size={size} whiteMask={whiteMask}/></motion.span><motion.span style={{scale:pause,opacity:pause}}><Icon name="pause" size={size} whiteMask={whiteMask}/></motion.span></span>;
 }
-export function Icon({ name, size = 24 }: {
+export function Icon({ name, size = 24, whiteMask = false }: {
     name: string;
     size?: number;
+    whiteMask?: boolean;
 }) {
+    if(texturedIcons[name]&&whiteMask)return <span className={`texture-icon texture-${name} masked-texture-icon`} style={{'--icon-size':`${size}px`,'--icon-mask':`url("${texturedIcons[name]}")`} as CSSProperties} aria-hidden="true"><img src={texturedIcons[name]} alt="" draggable={false}/><i className="icon-white-overlay"/></span>;
     if(texturedIcons[name])return <img className={`texture-icon texture-${name}`} src={texturedIcons[name]} width={size} height={size} alt="" aria-hidden="true" draggable={false}/>;
     if(name==='play')return <Icon name="Play" size={size}/>;
     if(name==='pause')return <Icon name="Pause" size={size}/>;
@@ -24,6 +37,6 @@ export function Artwork({ entity, small = false }: {
     entity: Entity;
     small?: boolean;
 }) {
-    return entity.cover ? <img draggable="false" className={`artwork ${entity.kind === 'artist' ? 'round' : ''}`} src={asset(entity.cover)} alt=""/> : <div className={`flow-art ${small ? 'small' : ''}`}><Icon name={entity.icon ?? 'wave'} size={small ? 46 : 110}/></div>;
+    return entity.cover ? <img draggable="false" className={`artwork ${entity.kind === 'artist' ? 'round' : ''}`} src={asset(entity.cover)} alt=""/> : <div className={`flow-art ${small ? 'small' : ''}`}><Icon name={entity.icon ?? 'wave'} size={small ? 46 : 110} whiteMask={small&&entity.id==='my-flow'}/></div>;
 }
 export function Glowie() { return <span className="glowie" aria-hidden="true"><i /><b /></span>; }

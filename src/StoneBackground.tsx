@@ -67,8 +67,8 @@ export default function StoneBackground(){
  const p=useDialKit('Камень и пепел',{
   ash:true, density:[39,0,48,1], speed:[.8,0,2,.05], wind:[-.2,-1,1,.05],
   glow:[1.2,0,2,.05], light:[.8, .4,1.8,.05], ember:'#bc7150',
-  textureScale:[1,.5,2,.05], sharpness:[1,0,3,.05], contrast:[1.15,.5,2,.05],
- },{persist:{key:'companion:stone-ash:v2',storage:'localStorage'}});
+  textureScale:[1.25,.5,2,.05], sharpness:[3,0,3,.05], contrast:[1.2,.5,2,.05],
+ },{persist:{key:'companion:stone-ash:v3',storage:'localStorage'}});
  const host=useRef<HTMLDivElement>(null), settings=useRef(p);
  settings.current=p;
  useEffect(()=>{

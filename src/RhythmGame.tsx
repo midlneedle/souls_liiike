@@ -9,6 +9,7 @@ import InvasionBackdrop,{preloadInvasionArt} from './rhythm/InvasionBackdrop';
 import {useSceneMotion} from './scenarios/SceneEffects';
 import {beatTimes} from './rhythm/beatmap';
 import {haptic,stopHaptics} from './haptics';
+import {withDeadline} from './loading';
 
 const KEY_LANES:Record<string,number>={KeyA:0,KeyS:1,KeyD:2,Digit1:0,Digit2:1,Digit3:2,ArrowLeft:0,ArrowDown:1,ArrowRight:2,Space:1};
 
@@ -47,7 +48,7 @@ export default function RhythmGame({audio,onClose}:{audio:RhythmAudio;onClose:(r
  const input=useRef({press,release});input.current={press,release};
  useEffect(()=>{
   let cancelled=false,frame=0,nextBeat=0,finishTimer:ReturnType<typeof setTimeout>|null=null;
-  Promise.all([import('./rhythm/scene.js'),preloadInvasionArt()]).then(async ([module])=>{
+  withDeadline(Promise.all([import('./rhythm/scene.js'),preloadInvasionArt()])).then(async ([module])=>{
    if(cancelled||!host.current)return;
    scene.current=module.createRhythmScene(host.current,game.current.notes,{
     onPresentation:({attack,recoil,damage,finish})=>{

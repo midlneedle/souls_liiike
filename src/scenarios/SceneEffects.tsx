@@ -1,6 +1,7 @@
 import {createContext,useContext,useEffect,useRef,useState} from 'react';
 import {motion,useReducedMotion} from 'motion/react';
 import Atmosphere from './SceneAtmosphere';
+import {loadImage} from '../loading';
 import mimicBackground from '../../textures/generated/mimic-background-v1.webp';
 import mimicCharacter from '../../textures/generated/mimic-character-v1.webp';
 import invasionBackground from '../../textures/generated/invasion-background-v1.webp';
@@ -45,8 +46,7 @@ export default function SceneArtwork({scene,original,alt,className,characterHidd
  useEffect(()=>{
   if(!options.enabled)return;
   let alive=true;
-  const preload=(url:string)=>new Promise<void>((resolve,reject)=>{const img=new Image();img.onload=()=>resolve();img.onerror=reject;img.src=url;});
-  Promise.all([preload(background),preload(character)]).then(()=>{if(alive)setLoaded(true);}).catch(()=>{if(alive)setLoaded(false);});
+  Promise.all([loadImage(background),loadImage(character)]).then(()=>{if(alive)setLoaded(true);}).catch(()=>{if(alive)setLoaded(false);});
   return()=>{alive=false;};
  },[options.enabled,background,character]);
  const active=options.enabled&&loaded;

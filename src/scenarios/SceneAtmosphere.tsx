@@ -1,3 +1,4 @@
+import {effectPixelRatio} from '../renderBudget';
 import {useEffect,useRef} from 'react';
 import {useReducedMotion} from 'motion/react';
 
@@ -132,7 +133,7 @@ export default function SceneAtmosphere(props:Props){
    gl.drawArrays(gl.TRIANGLES,0,6);
   };
   repaint.current=()=>{last=0;draw(performance.now());};
-  const resize=()=>{const r=parent.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,theme==='invasion'?2:1.5);canvas.width=Math.max(1,Math.round(r.width*dpr));canvas.height=Math.max(1,Math.round(r.height*dpr));gl.viewport(0,0,canvas.width,canvas.height);if(reduced)draw(performance.now());};
+  const resize=()=>{const r=parent.getBoundingClientRect(),dpr=effectPixelRatio(r.width,r.height);canvas.width=Math.max(1,Math.round(r.width*dpr));canvas.height=Math.max(1,Math.round(r.height*dpr));gl.viewport(0,0,canvas.width,canvas.height);if(reduced)draw(performance.now());};
   const visibility=()=>{cancelAnimationFrame(frame);last=0;if(!document.hidden)frame=requestAnimationFrame(draw);};
   const contextLost=()=>{cancelAnimationFrame(frame);canvas.style.visibility='hidden';};
   canvas.addEventListener('webglcontextlost',contextLost);document.addEventListener('visibilitychange',visibility);

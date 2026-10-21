@@ -5,12 +5,12 @@ import {createRequire} from 'node:module';
 const bundled=buildSync({entryPoints:['src/rhythm/audio.ts'],bundle:true,platform:'node',format:'cjs',write:false,define:{'import.meta.env.BASE_URL':'"/"'}}).outputFiles[0].text;
 test('audio only starts explicitly, pauses its clock, and cannot start after cancellation',async()=>{
  const previousAudio=(globalThis as any).AudioContext,previousFetch=globalThis.fetch;
- let starts=0,stops=0,closed=0,requests=0;
+ let starts=0,stops=0,closed=0,requests=0,decodes=0;
  class Context{
   state='suspended';currentTime=10;destination={};
   async resume(){this.state='running';}async suspend(){this.state='suspended';}
   async close(){closed++;this.state='closed';}
-  async decodeAudioData(){return {};}
+  async decodeAudioData(){decodes++;return {};}
   createGain(){return {connect(){},gain:{setValueAtTime(){},linearRampToValueAtTime(){}}};}
   createBufferSource(){return {buffer:null,connect(){},start(){starts++;},stop(){stops++;}};}
  }
@@ -28,5 +28,6 @@ test('audio only starts explicitly, pauses its clock, and cannot start after can
   await audio.resume();assert.equal(starts,1,'resume must not recreate the source or restart the track');
   audio.context.currentTime=15.12;assert.ok(Math.abs(audio.time-5)<.001);
   audio.dispose();audio.dispose();assert.equal(stops,1);assert.equal(closed,2);
+  const replay=new Audio();await replay.ready;assert.equal(requests,1,'replay reuses the downloaded music');assert.equal(decodes,1,'replay reuses the decoded buffer across AudioContexts');replay.dispose();
  }finally{(globalThis as any).AudioContext=previousAudio;globalThis.fetch=previousFetch;}
 });

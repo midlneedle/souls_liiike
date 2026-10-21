@@ -1,13 +1,12 @@
 import {useContext} from 'react';
+import {loadImage} from '../loading';
 import {SceneEffectsContext} from '../scenarios/SceneEffects';
 import SceneAtmosphere from '../scenarios/SceneAtmosphere';
 import cathedral from '../../textures/generated/invasion-background-v1.webp';
 import angryBoss from '../../textures/generated/invasion-boss-angry-v1.webp';
 
 export function preloadInvasionArt(){
- return Promise.all([cathedral,angryBoss].map(src=>new Promise<void>((resolve,reject)=>{
-  const image=new Image();image.onload=()=>resolve();image.onerror=()=>reject(new Error('Invasion artwork unavailable'));image.src=src;
- })));
+ return Promise.all([cathedral,angryBoss].map(loadImage));
 }
 
 export default function InvasionBackdrop({paused}:{paused:boolean}){

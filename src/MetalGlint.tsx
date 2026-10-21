@@ -1,3 +1,4 @@
+import {effectPixelRatio} from './renderBudget';
 import {useEffect, useRef} from 'react';
 import {usePrototypeSettings} from './usePrototypeSettings';
 import player from '../textures/plas.webp';
@@ -152,7 +153,7 @@ export default function MetalGlint(){
   };
   const lost=()=>{cancelAnimationFrame(frame);canvas.style.visibility='hidden';};
   const resize=()=>{
-   const bounds=parent.getBoundingClientRect(),ratio=Math.min(devicePixelRatio||1,2);
+   const bounds=parent.getBoundingClientRect(),ratio=effectPixelRatio(bounds.width,bounds.height);
    canvas.width=Math.max(1,Math.round(bounds.width*ratio));canvas.height=Math.max(1,Math.round(bounds.height*ratio));gl.viewport(0,0,canvas.width,canvas.height);
   };
   const observer=new ResizeObserver(resize);observer.observe(parent);resize();

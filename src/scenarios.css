@@ -10,7 +10,7 @@ body{background:#000}
 .scenario-menu-options{position:relative;display:grid;gap:10px;flex-shrink:0}
 .scenario-menu-button{position:relative;display:grid;place-items:center;width:100%;height:auto;aspect-ratio:357/119;flex-shrink:0;padding:20px 30px;font-size:24px;font-weight:500;line-height:1;background:url('../textures/plas.webp') center/contain no-repeat;color:#d8d6d2}
 .scenario-menu-close{position:relative;width:100%}
-.scenario-menu-button>span{transform:translateY(-3px);filter:blur(.4px)}
+.scenario-menu-button>span{transform:translateY(-3px)}
 .scenario-menu-button:active{transform:scale(.98)}
 .mimic-content{position:absolute;inset:var(--safe-top) 0 calc(var(--bottom-space) + var(--safe-bottom));display:flex;align-items:center;justify-content:center;padding-bottom:28px}
 .mimic-hero{position:relative;width:min(calc(100% - 44px),calc((var(--app-height) - var(--bottom-space) - var(--safe-top) - var(--safe-bottom) - 68px)*.648));aspect-ratio:784/1210;isolation:isolate}
@@ -42,9 +42,8 @@ body{background:#000}
 .ornate-close:active:not(:disabled){opacity:1;filter:drop-shadow(0 1px 2px #0009) brightness(1.1)}
 .mimic-frame-close{left:86%;top:6.8%;translate:-50% -50%}
 .mimic-frame-close:active{transform:scale(.94)}
-.mimic-lettering{position:absolute;left:-8%;right:-8%;bottom:calc(var(--mimic-play-size,112px) - var(--mimic-play-lift,26px) + var(--mimic-lettering-gap,12px));text-align:center;color:#e8e6e3;z-index:2;font-weight:600;line-height:1;letter-spacing:-.04em;text-shadow:var(--mimic-shadow-x,0px) var(--mimic-shadow-y,0px) var(--mimic-shadow-blur,10px) var(--mimic-shadow-color,#0008);outline:none}
-.mimic-lettering span{display:block;font-size:20px;font-weight:600;line-height:1;white-space:nowrap;margin-bottom:4px}
-.mimic-lettering strong{display:block;font-size:60px;font-weight:600;line-height:1;letter-spacing:-.04em;white-space:nowrap}
+.mimic-lettering{position:absolute;left:50%;width:calc(var(--app-width,100vw) - 32px);transform:translateX(-50%);bottom:calc(var(--mimic-play-size,112px) - var(--mimic-play-lift,26px) + var(--mimic-lettering-gap,12px));text-align:center;color:#e8e6e3;z-index:2;font-weight:600;line-height:1;letter-spacing:-.04em;text-shadow:var(--mimic-shadow-x,0px) var(--mimic-shadow-y,0px) var(--mimic-shadow-blur,10px) var(--mimic-shadow-color,#0008);outline:none}
+.mimic-lettering img{display:block;width:100%;height:auto}
 .mimic-play-anchor{position:absolute;left:50%;bottom:calc(0px - var(--mimic-play-lift,26px));width:32%;min-width:96px;max-width:132px;aspect-ratio:1;transform:translateX(-50%);z-index:3}
 .scenario-play{position:absolute;inset:0;width:100%;height:100%;padding:0;border-radius:50%;display:grid;place-items:center;isolation:isolate;touch-action:manipulation}
 .scenario-play:before{content:'';position:absolute;inset:4px;z-index:-1;border-radius:50%;background:url('../textures/optimized/play-disc-mimic.webp') center/100% 100% no-repeat}
@@ -92,8 +91,7 @@ body{background:#000}
 .cat-frame-close{left:86%;top:6.8%;translate:-50% -50%}
 .cat-frame-close:active{transform:scale(.94)}
 @media(min-width:600px){.scenario-app{height:min(900px,100svh)}}
-@media(max-width:390px){.mimic-lettering strong{font-size:clamp(44px,15.38vw,60px)}.mimic-lettering span{font-size:clamp(16px,5.128vw,20px)}}
-@media(max-height:720px){.scenario-menu{padding-top:calc(var(--safe-top) + 24px);padding-bottom:calc(var(--safe-bottom) + 20px);gap:16px}.scenario-menu-options{gap:6px}.scenario-prompt-bottom{bottom:calc(var(--safe-bottom) + 18px)}.scenario-actions{margin-top:22px;gap:4px}.invasion-title{margin-bottom:24px}.invasion-description{top:calc(var(--safe-top) + 24px)}.mimic-content{padding-bottom:14px}.mimic-hero{width:min(calc(100% - 44px),calc((var(--app-height) - var(--bottom-space) - var(--safe-top) - var(--safe-bottom) - 50px)*.648))}.mimic-lettering strong{font-size:48px}.mimic-lettering span{font-size:17px}}
+@media(max-height:720px){.scenario-menu{padding-top:calc(var(--safe-top) + 24px);padding-bottom:calc(var(--safe-bottom) + 20px);gap:16px}.scenario-menu-options{gap:6px}.scenario-prompt-bottom{bottom:calc(var(--safe-bottom) + 18px)}.scenario-actions{margin-top:22px;gap:4px}.invasion-title{margin-bottom:24px}.invasion-description{top:calc(var(--safe-top) + 24px)}.mimic-content{padding-bottom:14px}.mimic-hero{width:min(calc(100% - 44px),calc((var(--app-height) - var(--bottom-space) - var(--safe-top) - var(--safe-bottom) - 50px)*.648))}}
 
 /* The portrait keeps its original resolution; only the two mouth halves move. */
 .scene-character-motion{position:absolute;inset:0}

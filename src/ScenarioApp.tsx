@@ -1,7 +1,7 @@
 import {useEffect,useRef,useState} from 'react';
 import type {CSSProperties} from 'react';
 import {AnimatePresence,motion} from 'motion/react';
-import {DialRoot,useDialKit} from 'dialkit';
+import {useDialKit} from 'dialkit';
 import {flowTrapTrack} from './data';
 import type {Track} from './data';
 import {Icon} from './ui';
@@ -54,7 +54,7 @@ export default function ScenarioApp({initialScreen='menu'}:{initialScreen?:Scree
  },[fighting,rhythm]);
  const startDuel=(track:Track)=>{setBattleTrack(track);setNotice('');setFighting(true);};
  const playerHeight=(width-16)/3;
- return <main ref={main} onClick={event=>{const target=event.target;if(!(target instanceof Element)||event.defaultPrevented)return;const button=target.closest('button');if(button&&!button.disabled&&!button.closest('[data-haptic="off"]'))haptic('tap');}} className="app scenario-app" data-screen={screen} data-fighting={fighting} data-rhythm-active={!!rhythm} style={{'--app-height':`${height}px`,'--icons-white':iconLight.opacity,'--flow-play-icon-x':`${flowPlay.playOffsetX}px`,'--mimic-play-lift':`${mimicPlay.lift}px`,'--mimic-lettering-gap':`${mimicLettering.gap}px`,'--mimic-shadow-x':`${mimicShadow.x}px`,'--mimic-shadow-y':`${mimicShadow.y}px`,'--mimic-shadow-blur':`${mimicShadow.blur}px`,'--mimic-shadow-color':mimicShadow.color,'--mini-player-height':`${playerHeight}px`,'--bottom-space':`${playerHeight+(interfaceOptions.dock?84:20)}px`,'--accent':'#d0cbc3','--background':'#000','--background-dark':'#000','--stage-top':'80px'} as CSSProperties}>
+ return <main ref={main} onClick={event=>{const target=event.target;if(!(target instanceof Element)||event.defaultPrevented)return;const button=target.closest('button');if(button&&!button.disabled&&!button.closest('[data-haptic="off"]'))haptic('tap');}} className="app scenario-app" data-screen={screen} data-fighting={fighting} data-rhythm-active={!!rhythm} style={{'--app-height':`${height}px`,'--app-width':`${width}px`,'--icons-white':iconLight.opacity,'--flow-play-icon-x':`${flowPlay.playOffsetX}px`,'--mimic-play-lift':`${mimicPlay.lift}px`,'--mimic-lettering-gap':`${mimicLettering.gap}px`,'--mimic-shadow-x':`${mimicShadow.x}px`,'--mimic-shadow-y':`${mimicShadow.y}px`,'--mimic-shadow-blur':`${mimicShadow.blur}px`,'--mimic-shadow-color':mimicShadow.color,'--mini-player-height':`${playerHeight}px`,'--bottom-space':`${playerHeight+(interfaceOptions.dock?84:20)}px`,'--accent':'#d0cbc3','--background':'#000','--background-dark':'#000','--stage-top':'80px'} as CSSProperties}>
   {screen==='mimic'&&<MetalGlint/>}
   <SceneEffectsContext.Provider value={{...sceneEffects,magic,ash,suspended:modal}}>
   <div className="scenario-content" inert={modal}>
@@ -91,7 +91,6 @@ export default function ScenarioApp({initialScreen='menu'}:{initialScreen?:Scree
    <AnimatePresence>{rhythm&&<RhythmGame audio={rhythm} onClose={closeRhythm}/>}</AnimatePresence>
   </SceneEffectsContext.Provider>
   {fighting&&<button className="scenario-battle-back" aria-label="Вернуться из боя" onClick={()=>setFighting(false)}><Icon name="back" size={28}/></button>}
-  <DialRoot position="top-right" defaultOpen={false} productionEnabled/>
  </main>;
 }
 

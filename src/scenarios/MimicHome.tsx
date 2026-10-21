@@ -23,7 +23,6 @@ export default function MimicHome({playing,onPlayingChange,onClose}:{playing:boo
  const clear=()=>{timers.current.forEach(clearTimeout);timers.current=[];};
  useEffect(()=>{
   const pulses:ReturnType<typeof setTimeout>[]=[];
-  if(phase==='windup')haptic('reveal');
   if(phase==='warning')for(let bite=0;bite<3;bite++)pulses.push(setTimeout(()=>haptic('chomp'),322+bite*620));
   if(phase==='vanishing')pulses.push(setTimeout(()=>haptic('bite'),702));
   if(phase==='parried')haptic('parry');
@@ -44,9 +43,9 @@ export default function MimicHome({playing,onPlayingChange,onClose}:{playing:boo
  const play=()=>{
   if(running){if(phase==='warning'){clear();seen.current=true;setPhase('parried');change.current(true);later(MIMIC_TIMING.retreat,()=>setPhase('settled'));}return;}
   if(seen.current){haptic('tap');change.current(!playing);return;}
-  seen.current=true;setPhase('windup');
-  const windup=reduced?100:MIMIC_TIMING.windup,warning=windup+PHOTO_PARRY_WINDOW,bite=warning+MIMIC_TIMING.bite,end=bite+MIMIC_TIMING.spit;
-  later(windup,()=>setPhase('warning'));later(warning,()=>setPhase('vanishing'));later(bite,()=>setPhase('appearing'));
+  seen.current=true;haptic('reveal');setPhase('warning');
+  const warning=PHOTO_PARRY_WINDOW,bite=warning+MIMIC_TIMING.bite,end=bite+MIMIC_TIMING.spit;
+  later(warning,()=>setPhase('vanishing'));later(bite,()=>setPhase('appearing'));
   later(end,()=>{setPhase('settled');setFailed(true);change.current(true);});
  };
  return <motion.section className="mimic-home scenario-screen" aria-label="Мимик — музыкальный поток для рилакса" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:.3}}>

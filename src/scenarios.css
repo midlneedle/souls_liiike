@@ -99,6 +99,7 @@ body{background:#000}
 .mimic-taunt{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center bottom;pointer-events:none;mask-image:linear-gradient(#000 80%,transparent 100%)}
 .photo-mimic-anchor .scenario-play{z-index:3}
 .photo-mimic{position:absolute;width:330%;left:-124%;bottom:-196%;aspect-ratio:1145/1374;pointer-events:none;z-index:4;transform-origin:50% 47%;overflow:visible}
+.photo-mimic-motion{position:absolute;inset:0;transform-origin:50% 47%}
 .photo-mimic img{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:contain;transform-origin:36% 44.5%;pointer-events:none}
 .photo-mimic-upper{clip-path:inset(0 0 55.5% 0)}
 .photo-mimic-lower{clip-path:inset(53.5% 0 0 0)}

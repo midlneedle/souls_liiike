@@ -1,0 +1,7 @@
+{
+  "tool": "image_gen built-in",
+  "prompt": "Use case: style-transfer. Asset type: transparent game UI frame. Reference image: existing circular blackened silver thorn metal resource rim. Generate its ROUNDED SQUARE counterpart for an album cover, front view, perfectly centered and symmetrical, same distressed forged dark silver gothic metal and small thorns. Square 1024x1024 canvas. Outer frame occupies x32..992 y32..992 including small thorns, inner transparent opening approximately x128..896 y128..896 with corner radius100. Frame centerline rounded square x94..930 y94..930 corner radius125. Crucial: two long EMPTY TRANSPARENT grooves cut through the metal, 20px wide, running within the rounded-square frame: left groove from top center gap around top-left corner down left edge around bottom-left ending bottom center gap; right groove mirrored. They are windows for animated stamina and health underlay, not colored gemstones. Central opening, grooves and exterior must all have true alpha transparency. Keep top and bottom center small metal bridges. No circular ring. No text, no icons, no background, no baked colored bars. Straight top/bottom/side edges with smoothly rounded corners. Thin elegant frame to leave the album visible.",
+  "reference": "../play_button_resource_rim.webp",
+  "output": "../cover_resource_rim.webp",
+  "processing": "crop 0 0 1254 1200; resize 512x512; lossless WebP"
+}

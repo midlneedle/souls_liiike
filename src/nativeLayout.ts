@@ -1,9 +1,9 @@
 // Preserve the native 160px carousel cards while fitting the Gothic composition.
-export function nativeLayout(height:number,safeTop=0,safeBottom=0){
+export function nativeLayout(height:number,safeTop=0,safeBottom=0,dockVisible=true){
  const viewportHeight=Math.max(height,646+safeTop+safeBottom);
  const bubbleHeight=80;
  const topLimit=safeTop+16;
- const miniPlayerTop=viewportHeight-safeBottom-20-64-110;
+ const miniPlayerTop=viewportHeight-safeBottom-20-(dockVisible?64:0)-110;
  const available=Math.max(0,miniPlayerTop-topLimit);
  const playHeight=196;
  const compactHeight=bubbleHeight+playHeight+160;

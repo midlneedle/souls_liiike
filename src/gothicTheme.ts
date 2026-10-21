@@ -1,12 +1,6 @@
 const accents:Record<string,string>={
  'my-flow':'#829C79',
- markul:'#AC6962',
- 'ready-flow-indie':'#A08AAC',
  'billie-rilish':'#8397B4',
- 'indie-louder':'#A192AE',
- 'flow-electro':'#829DB5',
- favorite:'#A66B70',
- 'flow-hiphop':'#B38858',
  justice:'#A49A7C',
  mimic:'#B35C54',
 };

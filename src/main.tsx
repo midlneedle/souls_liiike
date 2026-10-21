@@ -6,4 +6,5 @@ import 'dialkit/styles.css';
 import './style.css';
 import './native.css';
 import './gothic.css';
+import './rhythm.css';
 createRoot(document.getElementById('root')!).render(<React.StrictMode><MotionConfig reducedMotion="user"><App /></MotionConfig></React.StrictMode>);

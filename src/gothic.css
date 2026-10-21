@@ -37,15 +37,25 @@ button:active:not(:disabled){filter:brightness(1.15)}
 .main-play::before{content:'';position:absolute;inset:4px;border-radius:50%;background:#fff;box-shadow:0 0 12px #ffffffa6;z-index:0;pointer-events:none}
 .main-play>.playback-glyph{z-index:1}
 .main-play:active:not(:disabled){transform:scale(.96)}
-.flow-play{width:120px;height:120px;left:46px;top:20px;color:var(--silver)}
+.flow-play{width:var(--cover-size);height:var(--cover-size);left:50%;margin-left:calc(var(--cover-size) / -2);top:auto;bottom:var(--cover-inset);color:var(--silver);transition:width .4s cubic-bezier(.65,0,.35,1),height .4s cubic-bezier(.65,0,.35,1),margin-left .4s cubic-bezier(.65,0,.35,1),bottom .4s cubic-bezier(.65,0,.35,1),transform .18s ease,filter .18s ease}
+.flow-play::after{background-image:url('../textures/play_button_resource_rim.webp');width:133.333%;height:133.333%}
+.flow-play>.resource-rim{width:133.333%;height:133.333%}
+.resource-rim{position:absolute;width:139.725%;height:139.725%;left:50%;top:50%;transform:translate(-50%,-50%);z-index:1;pointer-events:none;overflow:visible}
+.resource-liquid,.resource-liquid>canvas,.resource-fallback{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.resource-liquid.liquid-ready>.resource-fallback{visibility:hidden}
+.resource-fill{transition:stroke-dashoffset .3s cubic-bezier(.22,1,.36,1)}
 .flow-play .texture-icon{width:72px!important;height:66px!important;filter:grayscale(1)}
-.flow-play .texture-play{width:96px!important;height:96px!important}
-.cover-play{width:68px;height:68px;right:0;bottom:0}
-.cover-play::after{width:var(--cover-play-rim-size,126%);height:var(--cover-play-rim-size,126%)}
-.cover-play .texture-icon{width:36px!important;height:38px!important;filter:grayscale(1)}
-.cover-play .texture-play{width:50px!important;height:50px!important;left:calc(50% + var(--cover-play-icon-x,0px))}
+.flow-play .texture-play{width:96px!important;height:96px!important;left:calc(50% + var(--flow-play-icon-x,0px))}
+.cover-play{position:absolute;inset:0;width:100%;height:100%;display:grid;place-items:center;z-index:3;padding:0;border-radius:24px;background:none;box-shadow:none;--icon-white-opacity:var(--icons-white,.45)}
+.cover-play>.playback-glyph{filter:drop-shadow(0 2px 4px #000b);transition:transform .18s ease}
+.cover-play:active:not(:disabled)>.playback-glyph{transform:scale(.96)}
+.cover-play .texture-icon{width:72px!important;height:66px!important;filter:grayscale(1)}
+.cover-play .texture-play{width:96px!important;height:96px!important;left:calc(50% + var(--cover-play-icon-x,0px))}
 .native-cover>.artwork{border-radius:24px;box-shadow:0 8px 28px #0008,0 0 0 1px #ded4bc22}
 .native-cover>.artwork.round{border-radius:50%}
+.native-cover.cover-resources>.artwork{border-radius:24px}
+.cover-resources::after{content:'';position:absolute;width:133.333%;height:133.333%;left:50%;top:50%;transform:translate(-50%,-50%);background:url('../textures/cover_resource_rim.webp') center/contain no-repeat;z-index:2;pointer-events:none}
+.cover-resources>.resource-rim-square{width:133.333%;height:133.333%;z-index:1}
 .native-cover .flow-art{background:radial-gradient(circle,#ffffff09,transparent 65%);box-shadow:none}
 .settings-pill{bottom:0;height:30px;min-height:30px;padding:0 18px;background:linear-gradient(#ffffff09,#ffffff03);border:1px solid #b9b2a342;border-radius:3px;box-shadow:inset 0 0 10px #0008;color:#cec8bc;font-size:12px;letter-spacing:.04em}
 .settings-pill:before,.settings-pill:after{content:'';position:absolute;width:4px;height:4px;top:12px;background:#a79b82;transform:rotate(45deg)}
@@ -142,3 +152,5 @@ button:active:not(:disabled){filter:brightness(1.15)}
 @media(prefers-reduced-motion:reduce){.text-glowie{display:none}.main-play,.asset-icon,.texture-icon{transition:none}.native-speech-line.ready>span:first-child{animation:none;mask:none;color:#eeeae2}}
 
 @media(prefers-reduced-motion:reduce){.stream-lines{transform:none!important}.stream-letter{opacity:1}}
+@media(prefers-reduced-motion:reduce){.resource-fill{transition:none}}
+@media(prefers-reduced-motion:reduce){.cover-play>.playback-glyph{transition:none}}

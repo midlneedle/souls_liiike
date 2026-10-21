@@ -2,6 +2,8 @@ import {useEffect, useRef} from 'react';
 import {useDialKit} from 'dialkit';
 import player from '../textures/plas.webp';
 import rim from '../textures/play_button_rim.webp';
+import resourceRim from '../textures/play_button_resource_rim.webp';
+import coverResourceRim from '../textures/cover_resource_rim.webp';
 import ornament from '../textures/ornament.webp';
 
 const vertex=`attribute vec2 position,texcoord;varying vec2 uv,screenUV;
@@ -88,7 +90,8 @@ export default function MetalGlint(){
    gl.uniform3f(uniforms.tint,((color>>16)&255)/255,((color>>8)&255)/255,(color&255)/255);
    const surfaces:Surface[]=[];
    if(v.miniPlayer)root.querySelectorAll<HTMLElement>('.mini-card').forEach(el=>surfaces.push({el,src:player,pseudo:'player'}));
-   if(v.playRim)root.querySelectorAll<HTMLElement>('.main-play').forEach(el=>surfaces.push({el,src:rim,pseudo:'rim'}));
+   if(v.playRim)root.querySelectorAll<HTMLElement>('.main-play').forEach(el=>surfaces.push({el,src:el.classList.contains('flow-play')?resourceRim:rim,pseudo:'rim'}));
+   if(v.playRim)root.querySelectorAll<HTMLElement>('.cover-resources').forEach(el=>surfaces.push({el,src:coverResourceRim,pseudo:'rim'}));
    if(v.ornaments)root.querySelectorAll<HTMLElement>('.entity-card').forEach(el=>surfaces.push({el,src:ornament,pseudo:'ornament'}));
    if(v.icons)root.querySelectorAll<HTMLElement>('.companion .texture-icon,.bottom-ui .texture-icon').forEach(el=>{
     const image=el instanceof HTMLImageElement?el:el.querySelector('img');

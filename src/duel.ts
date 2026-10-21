@@ -25,7 +25,7 @@ export class Duel{
  get finished(){return this.phase==='won'||this.phase==='lost';}
  get vulnerabilityRemaining(){return this.phase==='stunned'?Math.max(0,2.6-this.elapsed):0;}
  get dodgeOnly(){return this.attack==='sweep';}
- start(){Object.assign(this,new Duel());this.beginAttack();}
+ start(lives=3){Object.assign(this,new Duel());this.lives=Math.max(1,Math.min(3,Math.ceil(lives-1e-8)));this.beginAttack();}
  private beginAttack(){const next=pattern[this.round%pattern.length];this.attack=next.attack;this.direction=next.direction;this.phase='windup';this.phaseStart=this.time;this.targetLane=this.lane;this.combo=0;this.comboDirections=[];}
  private defend(event:'parried'|'dodged',timed=true):DuelEvent{
   this.lastPerfect=timed&&this.impactDelay-this.elapsed<=.14;

@@ -1,0 +1,14 @@
+.rhythm-game{position:absolute;inset:0;z-index:12;overflow:hidden;background:linear-gradient(#080a0cdb,#10111266 50%,#08090bcc);touch-action:none;user-select:none;-webkit-user-select:none}
+.rhythm-scene{position:absolute;inset:0;touch-action:none}
+.rhythm-scene canvas{display:block;width:100%;height:100%}
+.rhythm-back{position:absolute;left:18px;top:calc(var(--safe-top) + 16px);width:44px;height:44px;display:grid;place-items:center;color:#e5ddca;opacity:.75;z-index:2}
+.rhythm-message{position:absolute;left:32px;right:32px;top:45%;text-align:center;font-size:22px;line-height:1.1;color:#e4ddce;text-shadow:0 2px 8px #000}
+.rhythm-message button{display:block;margin:24px auto;color:inherit;font:inherit;padding:12px 24px}
+.rhythm-resume{padding:24px 0}
+.rhythm-loading{display:block;width:36px;height:36px;margin:0 auto 24px;border:2px solid #b7a27c33;border-top-color:#d8bc8b;border-radius:50%;animation:rhythm-loading 1.2s linear infinite}
+.app[data-rhythm-active=true]>.companion{opacity:0!important;pointer-events:none;transform:translateY(-64px);transition:opacity .4s ease,transform .6s cubic-bezier(.22,1,.36,1)}
+.app[data-rhythm-active=true]>.bottom-ui{opacity:0;pointer-events:none}
+.flow-play.holding>.playback-glyph{animation:rhythm-hold .65s cubic-bezier(.22,1,.36,1) both}
+@keyframes rhythm-hold{to{transform:scale(.8);filter:drop-shadow(0 0 12px #c79c5d)}}
+@keyframes rhythm-loading{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.app[data-rhythm-active=true]>.companion{transform:none;transition:none}.flow-play.holding>.playback-glyph,.rhythm-loading{animation:none}}

@@ -9,7 +9,8 @@ import {asset} from './data';
 import type {Track} from './data';
 import {Icon} from './ui';
 import BattleStage from './BattleStage';
-export default function DuelView({track,onSaved,onClose}:{track:Track;onSaved:()=>void;onClose:()=>void}){
+export default function DuelView({track,onSaved,onClose,initialHealth=1,onHealthChange}:{track:Track;onSaved:()=>void;onClose:()=>void;initialHealth?:number;onHealthChange?:(health:number)=>void}){
+ const startingHealth=useRef(initialHealth),healthRef=useRef(onHealthChange);healthRef.current=onHealthChange;
  const duel=useRef(new Duel()),arena=useRef<HTMLDivElement>(null),present=useRef(true),isPresent=useIsPresent();present.current=isPresent;
  const [graphics,setGraphics]=useState(false),[forming,setForming]=useState(false),[event,setEvent]=useState<BattleEvent|null>(null),[heartReturning,setHeartReturning]=useState(false),[heartTop,setHeartTop]=useState('68%');
  const [,render]=useState(0),saved=useRef(false),timers=useRef<ReturnType<typeof setTimeout>[]>([]),reduced=useReducedMotion();
@@ -17,6 +18,7 @@ export default function DuelView({track,onSaved,onClose}:{track:Track;onSaved:()
  const input=useRef<SwordInput>({active:false,x:0,y:0,direction:'up',at:0});
  const respond=(result:DuelEvent|undefined)=>{
   if(!result)return;setEvent({type:result,at:performance.now()});render(n=>n+1);
+  if(result==='hurt'||result==='lost')healthRef.current?.(duel.current.lives/3);
   if(result==='won'&&!saved.current){saved.current=true;saveRef.current();timers.current.push(setTimeout(()=>{if(present.current)setHeartReturning(true);},850));timers.current.push(setTimeout(()=>{if(present.current)closeRef.current();},1500));}
   if(result==='lost')timers.current.push(setTimeout(()=>{if(present.current)closeRef.current();},1200));
  };
@@ -26,7 +28,7 @@ export default function DuelView({track,onSaved,onClose}:{track:Track;onSaved:()
  const actions=useRef({slash});actions.current={slash};
  useLayoutEffect(()=>{const el=arena.current;if(!el)return;const update=()=>{const h=el.clientHeight,scale=Math.min(1,Math.max(.5,(h-100)/300));setHeartTop(`${h/2-36+112*scale}px`);};update();const observer=new ResizeObserver(update);observer.observe(el);return()=>observer.disconnect();},[]);
  useEffect(()=>{const arrival=setTimeout(()=>setForming(true),650);return()=>clearTimeout(arrival);},[]);
- useEffect(()=>{if(!forming)return;const start=setTimeout(()=>{duel.current.start();setEvent({type:'start',at:performance.now()});render(n=>n+1);},1000);return()=>clearTimeout(start);},[forming]);
+ useEffect(()=>{if(!forming)return;const start=setTimeout(()=>{duel.current.start(startingHealth.current*3);setEvent({type:'start',at:performance.now()});render(n=>n+1);},1000);return()=>clearTimeout(start);},[forming]);
  useEffect(()=>{let frame=0,last=performance.now();const tick=(now:number)=>{const delta=Math.min(.05,Math.max(0,(now-last)/1000));last=now;if(!document.hidden){respondRef.current(duel.current.advance(delta));if(duel.current.phase!=='ready'&&!duel.current.finished)render(n=>n+1);}frame=requestAnimationFrame(tick);};frame=requestAnimationFrame(tick);const release=()=>{pointer.current=null;input.current.active=false;};window.addEventListener('blur',release);document.addEventListener('visibilitychange',release);return()=>{cancelAnimationFrame(frame);timers.current.forEach(clearTimeout);window.removeEventListener('blur',release);document.removeEventListener('visibilitychange',release);};},[]);
  useEffect(()=>{const down=(e:KeyboardEvent)=>{if(e.repeat)return;const direction=({ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down'} as const)[e.key as 'ArrowLeft'];if(direction){e.preventDefault();actions.current.slash(direction);}};window.addEventListener('keydown',down);return()=>window.removeEventListener('keydown',down);},[]);
  const d=duel.current;

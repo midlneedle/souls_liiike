@@ -2,10 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import {useDialKit} from 'dialkit';
-import { asset, cardLines, entities, entityTracks, mimicTrack, playLines, replacement } from './data';
+import { asset, cardLines, entities, entityTracks, mimicTrack, flowTrapTrack, flowTrapReturnLine, playLines, replacement } from './data';
 import type { Entity, Track } from './data';
 import { Artwork, Glowie, Icon, PlaybackGlyph } from './ui';
 import DuelView from './DuelView';
+import RhythmGame from './RhythmGame';
+import {RhythmAudio} from './rhythm/audio';
 import Carousel from './Carousel';
 import {nativeLayout} from './nativeLayout';
 import {gothicPalette} from './gothicTheme';
@@ -14,6 +16,8 @@ import NativeSpeech from './NativeSpeech';
 import MiniPlayer from './MiniPlayer';
 import StoneBackground from './StoneBackground';
 import MetalGlint from './MetalGlint';
+import ResourceRim from './ResourceRim';
+import {SKIP_STAMINA_COST,STAMINA_RECOVERY_DELAY,spendResource,recoverStamina} from './playerResources';
 import MimicStage from './MimicStage';
 import {MIMIC_TIMING} from './mimic/timing';
 import type {MimicPhase} from './mimic/timing';
@@ -21,18 +25,49 @@ import type {MimicPhase} from './mimic/timing';
 const wrap = (n: number) => ((n % entities.length) + entities.length) % entities.length;
 const spring = { type: 'spring' as const, stiffness: 230, damping: 26 };
 export default function App() {
+    const interfaceOptions=useDialKit('Интерфейс',{
+        dock:true,
+    },{persist:{key:'companion:interface:v1',storage:'localStorage'}});
     const iconLight=useDialKit('Белые маски иконок',{
         opacity:[.45,0,1,.01],
     },{persist:{key:'companion:icon-white:v2',storage:'localStorage'}});
     const coverPlay=useDialKit('Play рядом с обложкой',{
-        rimSize:[126,100,160,.5],
         playOffsetX:[0,-12,12,.5],
     },{persist:{key:'companion:cover-play:v1',storage:'localStorage'}});
+    const flowPlay=useDialKit('Play Моего потока',{
+        playOffsetX:[0,-16,16,.5],
+    },{persist:{key:'companion:flow-play:v1',storage:'localStorage'}});
+    const rimResources=useDialKit('Ресурсы в ободе',{
+        stamina:[1,0,1,.01],health:[1,0,1,.01],
+    },{persist:{key:'companion:resource-rim-preview:v1',storage:'localStorage'}});
+    const [resources,setResources]=useState({stamina:rimResources.stamina,health:rimResources.health});
+    const lastExertion=useRef(0);
+    useEffect(()=>{setResources({stamina:rimResources.stamina,health:rimResources.health});},[rimResources.stamina,rimResources.health]);
+    useEffect(()=>{
+        let previous=performance.now();
+        const timer=setInterval(()=>{
+            const now=performance.now(),delta=Math.min(.25,(now-previous)/1000);previous=now;
+            if(document.hidden||now-lastExertion.current<STAMINA_RECOVERY_DELAY*1000)return;
+            setResources(value=>value.stamina>=1?value:{...value,stamina:recoverStamina(value.stamina,delta)});
+        },100);
+        return()=>clearInterval(timer);
+    },[]);
+    const spendStamina=(cost:number)=>{lastExertion.current=performance.now();setResources(value=>({...value,stamina:spendResource(value.stamina,cost)}));};
+    const takeMimicHit=()=>setResources(value=>({...value,health:spendResource(value.health,1/3)}));
     const [index, setIndex] = useState(0), [active, setActive] = useState<string | null>(null), [playing, setPlaying] = useState(false);
     const [replaced, setReplaced] = useState<Set<string>>(new Set()), [trackIndices, setTrackIndices] = useState<Record<string, number>>({});
     const [mimicReady,setMimicReady]=useState(false),[mimic3DActive,setMimic3DActive]=useState(false);
     const [message, setMessage] = useState<string | null>(null), [phase, setPhase] = useState<MimicPhase>('idle');
     const [queue, setQueue] = useState<Entity | null>(null), [settings, setSettings] = useState(false), [feed, setFeed] = useState(false);
+    const [rhythm,setRhythm]=useState<RhythmAudio|null>(null),[holdingFlow,setHoldingFlow]=useState(false);
+    const rhythmRef=useRef<RhythmAudio|null>(null),suppressFlowClick=useRef(0);
+    const hold=useRef<{timer:ReturnType<typeof setTimeout>;audio:RhythmAudio;x:number;y:number}|null>(null);
+    useEffect(()=>{
+        const cancel=()=>{if(hold.current){clearTimeout(hold.current.timer);hold.current.audio.dispose();hold.current=null;setHoldingFlow(false);}};
+        const visibility=()=>{if(document.hidden)cancel();};
+        window.addEventListener('blur',cancel);document.addEventListener('visibilitychange',visibility);
+        return()=>{window.removeEventListener('blur',cancel);document.removeEventListener('visibilitychange',visibility);if(hold.current){clearTimeout(hold.current.timer);hold.current.audio.dispose();}rhythmRef.current?.dispose();};
+    },[]);
     const [challenge, setChallenge] = useState<Track | null>(null), [saved, setSaved] = useState<Set<string>>(new Set()), [gift, setGift] = useState<Track | null>(null);
     const [mood, setMood] = useState('Любое'), [genre, setGenre] = useState('Любой'), [preference, setPreference] = useState('Любая'), [situation, setSituation] = useState('Любая');
     const [moodPoint, setMoodPoint] = useState({ x: .5, y: .5 });
@@ -43,8 +78,8 @@ export default function App() {
         deadline: number;
     } | null>(null), timers = useRef<ReturnType<typeof setTimeout>[]>([]);
     const appRef=useRef<HTMLElement>(null);
-    const [layout,setLayout]=useState(()=>nativeLayout(typeof window==='undefined'?900:window.innerHeight));
-    useEffect(()=>{const el=appRef.current;if(!el)return;const update=()=>{const css=getComputedStyle(el);setLayout(nativeLayout(el.clientHeight,parseFloat(css.getPropertyValue('--safe-top'))||0,parseFloat(css.getPropertyValue('--safe-bottom'))||0));};const observer=new ResizeObserver(update);observer.observe(el);update();return()=>observer.disconnect();},[]);
+    const [layout,setLayout]=useState(()=>nativeLayout(typeof window==='undefined'?900:window.innerHeight,0,0,interfaceOptions.dock));
+    useEffect(()=>{const el=appRef.current;if(!el)return;const update=()=>{const css=getComputedStyle(el);setLayout(nativeLayout(el.clientHeight,parseFloat(css.getPropertyValue('--safe-top'))||0,parseFloat(css.getPropertyValue('--safe-bottom'))||0,interfaceOptions.dock));};const observer=new ResizeObserver(update);observer.observe(el);update();return()=>observer.disconnect();},[interfaceOptions.dock]);
     const reduced = useReducedMotion();
     const locked = phase === 'windup' || phase === 'warning' || phase === 'vanishing' || phase === 'appearing' || phase === 'parried';
     const mimicTitles: Record<string, string> = { justice: 'Neverendr', 'billie-rilish': 'Billie Eilsh' };
@@ -55,7 +90,7 @@ export default function App() {
     const palette=gothicPalette(replaced.has(selected.id)?'mimic':selected.id);
     const current = (e: Entity) => entityTracks(e)[trackIndices[e.id] ?? 0] ?? entityTracks(e)[0];
     const currentTrack = current(activeEntity), selectedPlaying = playing && active === selected.id;
-    const displayMessage = message ?? (replaced.has(selected.id) ? 'Я знал, что тебе это понравится.' : cardLines[selected.id]);
+    const displayMessage = message ?? (replaced.has(selected.id) ? 'Я знал, что тебе это понравится.' : selected.id==='my-flow'&&jokes.current.has('flow-calm') ? flowTrapReturnLine : cardLines[selected.id]);
     const say = (text: string) => { lastJoke.current = performance.now(); setMessage(text); };
     const once = (key: string, text: string, gap = 6000) => { if (jokes.current.has(key) || performance.now() - lastJoke.current < gap)
         return; jokes.current.add(key); say(text); };
@@ -63,7 +98,7 @@ export default function App() {
     const later = (ms: number, fn: () => void) => { timers.current.push(setTimeout(fn, ms)); };
     const setMimicPhase = (next: MimicPhase) => { if (mimic.current)
         mimic.current.phase = next; setPhase(next); };
-    const taunt = (id: string) => id === 'billie-rilish' ? 'Билли не будет. Попробуй послушать это.' : 'Justice? Хрен там. Слушай Маркула.';
+    const taunt = (id: string) => id === 'billie-rilish' ? 'Билли не будет. Попробуй послушать это.' : 'Включил Justice. Получил Velin.';
     const commit = (source: Entity) => { setReplaced(prev => new Set(prev).add(source.id)); setTrackIndices(p => ({ ...p, [source.id]: 0 })); setActive(source.id); setPlaying(true); };
     const reveal = (source: Entity) => {
         if (locked)
@@ -81,7 +116,7 @@ export default function App() {
         const spitAt=biteAt+(spatial?MIMIC_TIMING.bite:240);
         const finishAt=spitAt+(spatial?MIMIC_TIMING.spit:32);
         later(warningAt,()=>{if(!mimic.current)return;mimic.current.deadline=performance.now()+MIMIC_TIMING.warning;setMimicPhase('warning');});
-        later(biteAt,()=>setMimicPhase('vanishing'));
+        later(biteAt,()=>{takeMimicHit();setMimicPhase('vanishing');});
         later(spitAt,()=>{commit(source);setMimicPhase('appearing');});
         later(finishAt,()=>setMimicPhase('settled'));
         later(finishAt+180,()=>{if(selectedIDRef.current===source.id)say(taunt(source.id));});
@@ -136,30 +171,50 @@ export default function App() {
         setActive(entity.id);
         setPlaying(willPlay);
         if (willPlay) {
+            if(entity.id==='my-flow'&&!track&&!jokes.current.has('flow-calm')){
+                const trapIndex=entityTracks(entity).findIndex(t=>t.id===flowTrapTrack.id);
+                if(trapIndex>=0){
+                    setTrackIndices(p=>({...p,[entity.id]:trapIndex}));
+                    jokes.current.add('flow-calm');
+                    say(playLines['my-flow']);
+                    return;
+                }
+            }
             if (replaced.has(entity.id))
-                once(`replay-${entity.id}`, `Да, это Маркул. ${entity.id === 'justice' ? 'Justice' : 'Билли'} не будет.`);
+                once(`replay-${entity.id}`, `Да, это Velin. ${entity.id === 'justice' ? 'Justice' : 'Билли'} не будет.`);
             else if (playLines[entity.id])
                 once(`play-${entity.id}`, playLines[entity.id], 3000);
         }
         else
             once('pause', 'Пауза. Наконец-то здравая мысль.');
     };
+    const cancelFlowHold=()=>{const pending=hold.current;if(!pending)return;clearTimeout(pending.timer);pending.audio.dispose();hold.current=null;setHoldingFlow(false);};
+    const enterRhythm=(audio:RhythmAudio)=>{suppressFlowClick.current=performance.now()+1000;hold.current=null;setHoldingFlow(false);rhythmRef.current=audio;setRhythm(audio);};
+    const beginFlowHold=(x:number,y:number)=>{
+        if(locked||challenge||rhythm||hold.current)return;
+        try{const audio=new RhythmAudio();setHoldingFlow(true);hold.current={audio,x,y,timer:setTimeout(()=>enterRhythm(audio),650)};}
+        catch{say('Звонарь пока не проснулся. Попробуй ещё раз.');}
+    };
+    const closeRhythm=(result?:{won:boolean;health:number;hits:number})=>{
+        rhythmRef.current?.dispose();rhythmRef.current=null;setRhythm(null);
+        if(result){setResources(value=>({...value,health:result.health}));say(result.won?'Ритм поймал. Вкус пока нет.':'Это был ритм. Ты с ним не сошёлся.');}
+    };
     const save = (track: Track | undefined) => { if (!track || saved.has(track.id) || locked)
-        return; setQueue(null); setFeed(false); say('Сохранить? Сначала отбей.'); setChallenge(track); };
+        return; if(resources.health<=0)setResources({stamina:1,health:1}); setQueue(null); setFeed(false); say('Сохранить? Сначала отбей.'); setChallenge(track); };
     const won = () => {
         if (!challenge)
             return;
         setSaved(prev => new Set(prev).add(challenge.id));
         if (!jokes.current.has('invader')) {
             jokes.current.add('invader');
-            const enemy = entityTracks(entities[1]).find(t => t.id !== challenge.id && !saved.has(t.id));
+            const enemy = entities.flatMap(entityTracks).find(t => t.id !== challenge.id && !saved.has(t.id));
             setGift(enemy ?? null);
             say('Сохранил свой? Недруг подкинул ещё.');
         }
         else
             say('Сохранено. Теперь стыдно официально.');
     };
-    const blockedSwipe = () => { skipAttempts.current++; const n = skipAttempts.current; if (n === 1)
+    const blockedSwipe = () => { spendStamina(SKIP_STAMINA_COST); skipAttempts.current++; const n = skipAttempts.current; if (n === 1)
         once('skip1', 'Ты сам это включил. Что ж, теперь слушай.', 0);
     else if (n >= 3 && !jokes.current.has('skip3'))
         once('skip3', 'Тебя никто за палец не тянул.');
@@ -167,27 +222,27 @@ export default function App() {
         once('skip6', 'А включал как уверенно.'); };
     const setMoodSelection = (value: string) => { setMood(value); const now = performance.now(); moodTimes.current = moodTimes.current.filter(t => now - t < 60000).concat(now); if (moodTimes.current.length >= 3)
         once('moods', 'Третье настроение. Зови экзорциста.'); };
-    return <main ref={appRef} className="app" data-compact-feed={layout.feedHeight<64} style={{'--cover-play-rim-size':`${coverPlay.rimSize}%`,'--cover-play-icon-x':`${coverPlay.playOffsetX}px`,'--icons-white':iconLight.opacity,'--accent':palette.glowAccent,'--background':palette.background,'--background-dark':palette.backgroundDark,'--surface':palette.surfaceAccent,'--wave-play':palette.wavePlay,'--wave-pause':palette.wavePause,'--stage-top':`${layout.stageTop}px`,'--stage-scale':layout.stageScale,'--carousel-top':`${layout.carouselTop}px`,'--carousel-height':`${layout.carouselHeight}px`,'--feed-top':`${layout.feedTop}px`,'--feed-height':`${layout.feedHeight}px`,'--bubble-height':`${layout.bubbleHeight}px`,'--cover-size':selectedPlaying?'200px':'172px','--cover-inset':selectedPlaying?'6px':'12px'} as CSSProperties}>
+    return <main ref={appRef} className="app" data-rhythm-active={!!rhythm} data-compact-feed={layout.feedHeight<64} style={{'--cover-play-icon-x':`${coverPlay.playOffsetX}px`,'--flow-play-icon-x':`${flowPlay.playOffsetX}px`,'--icons-white':iconLight.opacity,'--accent':palette.glowAccent,'--background':palette.background,'--background-dark':palette.backgroundDark,'--surface':palette.surfaceAccent,'--wave-play':palette.wavePlay,'--wave-pause':palette.wavePause,'--stage-top':`${layout.stageTop}px`,'--stage-scale':layout.stageScale,'--carousel-top':`${layout.carouselTop}px`,'--carousel-height':`${layout.carouselHeight}px`,'--feed-top':`${layout.feedTop}px`,'--feed-height':`${layout.feedHeight}px`,'--bubble-height':`${layout.bubbleHeight}px`,'--cover-size':'172px','--cover-inset':'12px'} as CSSProperties}>
   <StoneBackground/>
   <MetalGlint/>
-  <motion.div className={`companion ${challenge?'duel-active':''}`} inert={settings||!!queue} animate={{opacity:feed?0:1}} style={{ pointerEvents: challenge || feed ? 'none' : undefined }}>
+  <motion.div className={`companion ${challenge?'duel-active':''}`} inert={settings||!!queue||!!rhythm} animate={{opacity:feed?0:1}} style={{ pointerEvents: challenge || feed ? 'none' : undefined }}>
    <div className={`speech ${locked?'concealed':''}`}><NativeSpeech text={displayMessage}/></div>
    <div className={`stage ${mimic3DActive&&locked?'mimic-running':''}`}>
-    {['justice','billie-rilish'].includes(selected.id)&&<MimicStage sourceURL={asset(entities[wrap(index)].cover!)} replacementURL={asset(mimicTrack.cover!)} round={entities[wrap(index)].kind==='artist'} phase={mimic3DActive?phase:'idle'} active={mimic3DActive&&locked} size={selectedPlaying?200:172} reduced={!!reduced} onReady={ready=>{setMimicReady(ready);if(!ready)setMimic3DActive(false);}}/>}
-    {selected.id === 'my-flow' ? <div className="my-flow-stage"><div className="flow-play-aura"/><button className="main-play flow-play" aria-label={selectedPlaying ? 'Пауза' : 'Включить Мой Поток'} onClick={() => play()} disabled={locked}><PlaybackGlyph playing={selectedPlaying} size={48}/></button></div> : <>
-     <motion.div className="cover-shell" animate={{ scale: reduced ? 1 : phase === 'warning' ? 1.035 : phase === 'vanishing' ? .76 : phase === 'appearing' ? .64 : 1, rotate: reduced ? 0 : phase === 'warning' ? -3 : 0, opacity: phase === 'vanishing' || phase === 'appearing' ? 0 : 1, filter: `brightness(${phase === 'warning' ? 1.2 : 1})`, y: !reduced && phase === 'appearing' ? 24 : 0 }} transition={phase === 'settled' ? { ...spring } : { duration: .22 }}><div className="native-cover"><Artwork entity={selected}/></div></motion.div>
-     <button className="main-play cover-play" aria-label={selectedPlaying ? 'Пауза' : `Включить ${selected.title}`} disabled={locked} onClick={() => play()}><PlaybackGlyph playing={selectedPlaying} size={38.4}/></button>
+    {['justice','billie-rilish'].includes(selected.id)&&<MimicStage sourceURL={asset(entities[wrap(index)].cover!)} replacementURL={asset(mimicTrack.cover!)} round={false} phase={mimic3DActive?phase:'idle'} active={mimic3DActive&&locked} size={172} reduced={!!reduced} onReady={ready=>{setMimicReady(ready);if(!ready)setMimic3DActive(false);}}/>}
+    {selected.id === 'my-flow' ? <div className="my-flow-stage"><div className="flow-play-aura"/><button className={`main-play flow-play ${holdingFlow?'holding':''}`} aria-label={selectedPlaying ? 'Пауза. Удерживай для ритм-игры' : 'Включить Мой Поток. Удерживай для ритм-игры'} onClick={() => {if(performance.now()>=suppressFlowClick.current)play();}} onPointerDown={e=>{if(e.isPrimary&&e.button===0)beginFlowHold(e.clientX,e.clientY);}} onPointerMove={e=>{const p=hold.current;if(p&&Math.hypot(e.clientX-p.x,e.clientY-p.y)>14)cancelFlowHold();}} onPointerUp={cancelFlowHold} onPointerCancel={cancelFlowHold} onPointerLeave={cancelFlowHold} onContextMenu={e=>e.preventDefault()} onKeyDown={e=>{if(e.shiftKey&&e.key==='Enter'&&!e.repeat){e.preventDefault();try{enterRhythm(new RhythmAudio());}catch{say('Звонарь пока не проснулся.');}}}} disabled={locked}><ResourceRim stamina={resources.stamina} health={resources.health}/><PlaybackGlyph playing={selectedPlaying} size={48}/></button></div> : <>
+     <motion.div className="cover-shell" animate={{ scale: reduced ? 1 : phase === 'warning' ? 1.035 : phase === 'vanishing' ? .76 : phase === 'appearing' ? .64 : 1, rotate: reduced ? 0 : phase === 'warning' ? -3 : 0, opacity: phase === 'vanishing' || phase === 'appearing' ? 0 : 1, filter: `brightness(${phase === 'warning' ? 1.2 : 1})`, y: !reduced && phase === 'appearing' ? 24 : 0 }} transition={phase === 'settled' ? { ...spring } : { duration: .22 }}><div className="native-cover cover-resources"><Artwork entity={selected}/><ResourceRim square stamina={resources.stamina} health={resources.health}/><button className="cover-play" aria-label={selectedPlaying ? 'Пауза' : `Включить ${selected.title}`} disabled={locked} onClick={() => play()}><PlaybackGlyph playing={selectedPlaying} size={48} whiteMask/></button></div></motion.div>
      {phase === 'warning' && <button className="parry-target" aria-label="Парировать мимика" onPointerDown={e => { e.preventDefault(); parryMimic(); }} onClick={parryMimic}/>}
     </>}
    </div>
    <Carousel entities={resolved} index={index} active={active} playing={playing} disabled={locked||!!challenge} onFocus={select} onQueue={e=>{if(e.kind==='flow')setSettings(true);else setQueue(e);}}/>
 
   </motion.div>
-  <div className={`bottom-ui ${challenge ? 'dimmed' : ''}`} inert={!!challenge || locked || settings || !!queue}>
+  <div className={`bottom-ui ${challenge ? 'dimmed' : ''}`} inert={!!challenge || locked || settings || !!queue || !!rhythm}>
    <MiniPlayer tracks={entityTracks(activeEntity)} currentIndex={trackIndices[activeEntity.id]??0} playing={playing} saved={saved} showsHeart={!challenge} onPlay={()=>play(activeEntity)} onSave={save} onSwipeAttempt={blockedSwipe}/>
-   <nav className="dock" aria-label="Основная навигация"><button aria-current="page"><Icon name="ic_home" whiteMask/><span>Главная</span></button><button><Icon name="ic_catalog" whiteMask/><span>Каталог</span></button><button><Icon name="profile" whiteMask/><span>Моё</span></button></nav>
+   {interfaceOptions.dock&&<nav className="dock" aria-label="Основная навигация"><button aria-current="page"><Icon name="ic_home" whiteMask/><span>Главная</span></button><button><Icon name="ic_catalog" whiteMask/><span>Каталог</span></button><button><Icon name="profile" whiteMask/><span>Моё</span></button></nav>}
   </div>
-  <AnimatePresence>{challenge && <DuelView key={challenge.id} track={challenge} onSaved={won} onClose={() => setChallenge(null)}/>}</AnimatePresence>
+  <AnimatePresence>{rhythm&&<RhythmGame audio={rhythm} onClose={closeRhythm}/>}</AnimatePresence>
+  <AnimatePresence>{challenge && <DuelView key={challenge.id} track={challenge} initialHealth={resources.health} onHealthChange={health=>setResources(value=>({...value,health}))} onSaved={won} onClose={() => setChallenge(null)}/>}</AnimatePresence>
   <AnimatePresence>{feed&&<motion.section className="feed" initial={{y:'100%'}} animate={{y:0}} exit={{y:'100%'}} transition={{duration:.55,ease:[.2,0,0,1]}} aria-label="Больше для вас"><button className="feed-shortcut" aria-label="Вернуться к компаньону" onClick={()=>setFeed(false)}><i/><i/><span><Artwork entity={selected} small/></span></button><div className="feed-grid">{Array.from({length:16},(_,i)=><div key={i}/>)}</div></motion.section>}</AnimatePresence>
   <AnimatePresence>{queue && <Sheet title={queue.title} onClose={() => setQueue(null)}>
    {saved.size > 0 && <p className="sheet-note">Сохранённые треки отмечены сердечком. Место в очереди ты уже отвоевал.</p>}

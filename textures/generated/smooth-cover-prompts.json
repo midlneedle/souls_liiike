@@ -7,7 +7,7 @@
       "prompt": "Use case: precise-object-edit. EDIT INPUT 1, not a new concept. It is a square music collection cover. Input 2 is the user's ORIGINAL favorite cover and is the exact BACKGROUND AND COMPOSITION reference. Keep the single existing Gothic sculpted emblem from input 1, same recognizable design and material, but reduce its size and center it so the emblem occupies ONLY 55 percent of the square's height, similar to the heart's scale in input 2. Completely REMOVE the rough black stone background, dust, grunge, grain, clouds, scratches, textures, vignetting and atmospheric smoke from the BACKGROUND ONLY. Replace background with a perfectly clean soft luminous modern multi-stop gradient, as simple and smooth as reference 2. The original favorite's clean smooth gradient is the goal, NOT a Gothic scene. The emblem alone retains the weathered metal and stone style. Plenty of smooth open colored space around the emblem. No circular plate behind emblem, no border, no frame, no text, no additional symbols, no new ornaments. Opaque square canvas, no baked rounded corners, no transparency. Background palette: smooth lavender and lilac with a darker periwinkle upper-right corner; match reference 2 very closely",
       "references": [
         "../../public/assets/flow-indie.webp",
-        "../../public/assets/дщму.png"
+        "../referance/favorite-original.webp"
       ]
     },
     {
@@ -16,7 +16,7 @@
       "prompt": "Use case: precise-object-edit. EDIT INPUT 1, not a new concept. It is a square music collection cover. Input 2 is the user's ORIGINAL favorite cover and is the exact BACKGROUND AND COMPOSITION reference. Keep the single existing Gothic sculpted emblem from input 1, same recognizable design and material, but reduce its size and center it so the emblem occupies ONLY 55 percent of the square's height, similar to the heart's scale in input 2. Completely REMOVE the rough black stone background, dust, grunge, grain, clouds, scratches, textures, vignetting and atmospheric smoke from the BACKGROUND ONLY. Replace background with a perfectly clean soft luminous modern multi-stop gradient, as simple and smooth as reference 2. The original favorite's clean smooth gradient is the goal, NOT a Gothic scene. The emblem alone retains the weathered metal and stone style. Plenty of smooth open colored space around the emblem. No circular plate behind emblem, no border, no frame, no text, no additional symbols, no new ornaments. Opaque square canvas, no baked rounded corners, no transparency. Background palette: smooth ice blue, soft cornflower blue, and deeper indigo towards the upper-right corner",
       "references": [
         "../../public/assets/flow-electro.webp",
-        "../../public/assets/дщму.png"
+        "../referance/favorite-original.webp"
       ]
     },
     {
@@ -25,7 +25,7 @@
       "prompt": "Use case: precise-object-edit. EDIT INPUT 1, not a new concept. It is a square music collection cover. Input 2 is the user's ORIGINAL favorite cover and is the exact BACKGROUND AND COMPOSITION reference. Keep the single existing Gothic sculpted emblem from input 1, same recognizable design and material, but reduce its size and center it so the emblem occupies ONLY 55 percent of the square's height, similar to the heart's scale in input 2. Completely REMOVE the rough black stone background, dust, grunge, grain, clouds, scratches, textures, vignetting and atmospheric smoke from the BACKGROUND ONLY. Replace background with a perfectly clean soft luminous modern multi-stop gradient, as simple and smooth as reference 2. The original favorite's clean smooth gradient is the goal, NOT a Gothic scene. The emblem alone retains the weathered metal and stone style. Plenty of smooth open colored space around the emblem. No circular plate behind emblem, no border, no frame, no text, no additional symbols, no new ornaments. Opaque square canvas, no baked rounded corners, no transparency. Background palette: smooth peach, muted apricot and copper with a darker warm plum upper-right corner",
       "references": [
         "../../public/assets/flow-hiphop.webp",
-        "../../public/assets/дщму.png"
+        "../referance/favorite-original.webp"
       ]
     },
     {
@@ -34,7 +34,7 @@
       "prompt": "Use case: precise-object-edit. EDIT INPUT 1, not a new concept. It is a square music collection cover. Input 2 is the user's ORIGINAL favorite cover and is the exact BACKGROUND AND COMPOSITION reference. Keep the single existing Gothic sculpted emblem from input 1, same recognizable design and material, but reduce its size and center it so the emblem occupies ONLY 55 percent of the square's height, similar to the heart's scale in input 2. Completely REMOVE the rough black stone background, dust, grunge, grain, clouds, scratches, textures, vignetting and atmospheric smoke from the BACKGROUND ONLY. Replace background with a perfectly clean soft luminous modern multi-stop gradient, as simple and smooth as reference 2. The original favorite's clean smooth gradient is the goal, NOT a Gothic scene. The emblem alone retains the weathered metal and stone style. Plenty of smooth open colored space around the emblem. No circular plate behind emblem, no border, no frame, no text, no additional symbols, no new ornaments. Opaque square canvas, no baked rounded corners, no transparency. Background palette: the exact soft lilac and lavender gradient character of reference 2, with darker blue-purple in the upper-right",
       "references": [
         "../../public/assets/favorite-gothic.webp",
-        "../../public/assets/дщму.png"
+        "../referance/favorite-original.webp"
       ]
     }
   ]

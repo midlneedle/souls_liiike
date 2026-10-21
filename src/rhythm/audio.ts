@@ -1,5 +1,6 @@
 let clip:Promise<ArrayBuffer>|null=null;
 const loadClip=()=>clip??=(fetch(`${import.meta.env.BASE_URL}music/bellkeeper.mp3`).then(response=>{if(!response.ok)throw Error('Audio unavailable');return response.arrayBuffer();}).catch(error=>{clip=null;throw error;}));
+export const preloadRhythmAudio=()=>loadClip().then(()=>{});
 // Construct on pointer/keyboard down: resume runs inside the trusted user gesture.
 export class RhythmAudio{
  readonly context:AudioContext;

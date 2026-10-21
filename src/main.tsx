@@ -3,7 +3,6 @@ import {initializeHaptics} from './haptics';
 import { createRoot } from 'react-dom/client';
 import { MotionConfig } from 'motion/react';
 import App from './App';
-import 'dialkit/styles.css';
 import './style.css';
 import './native.css';
 import './gothic.css';

@@ -8,8 +8,8 @@ export default function BattleStage({duel,event,input,forming,coverURL,reduced,o
  useEffect(()=>{
   let cancelled=false,frame=0,last=0,started=0;let scene:Awaited<ReturnType<typeof createBattleScene>>|null=null;
   import('./battle/scene.js').then(module=>{if(!host.current||cancelled)return;return module.createBattleScene(host.current,coverURL);}).then(instance=>{
-   if(!instance)return;if(cancelled){instance.dispose();return;}scene=instance;props.current.onReady(true);
-   const tick=(now:number)=>{if(!document.hidden&&now-last>=1000/60-1){const p=props.current;if(p.forming&&!started)started=now;const sword=p.input.current;scene?.render(p.duel,{input:{...sword,age:(now-sword.at)/1000},intro:!p.forming?0:p.reduced?1:Math.min(1,(now-started)/750),event:p.event?.type??null,eventAge:p.event?Math.max(0,(now-p.event.at)/1000):10},p.reduced);last=now;}frame=requestAnimationFrame(tick);};frame=requestAnimationFrame(tick);
+   if(!instance)return;if(cancelled){instance.dispose();return;}scene=instance;let ready=false;
+   const tick=(now:number)=>{if(!document.hidden&&now-last>=1000/60-1){const p=props.current;if(p.forming&&!started)started=now;const sword=p.input.current;scene?.render(p.duel,{input:{...sword,age:(now-sword.at)/1000},intro:!p.forming?0:p.reduced?1:Math.min(1,(now-started)/750),event:p.event?.type??null,eventAge:p.event?Math.max(0,(now-p.event.at)/1000):10},p.reduced);if(!ready){ready=true;p.onReady(true);}last=now;}frame=requestAnimationFrame(tick);};frame=requestAnimationFrame(tick);
   }).catch(()=>{if(!cancelled)props.current.onReady(false);});
   return()=>{cancelled=true;cancelAnimationFrame(frame);scene?.dispose();};
  },[coverURL]);

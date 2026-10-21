@@ -1,5 +1,5 @@
 import {useEffect, useRef} from 'react';
-import {useDialKit} from 'dialkit';
+import {usePrototypeSettings} from './usePrototypeSettings';
 import player from '../textures/plas.webp';
 import rim from '../textures/play_button_rim.webp';
 import resourceRim from '../textures/play_button_resource_rim.webp';
@@ -32,7 +32,7 @@ type Texture={texture:WebGLTexture;image:HTMLImageElement;ready:boolean};
 
 // One context and one clock for all metal; DOM geometry follows carousel rotations and swipes.
 export default function MetalGlint(){
- const p=useDialKit('Металлический блик',{
+ const p=usePrototypeSettings('Металлический блик',{
   enabled:true,intensity:[.32,0,1,.01],duration:[9,3,24,.5],width:[.035,.01,.18,.005],
   tilt:[.12,-.5,.5,.01],color:'#d6e8ff',
   miniPlayer:true,playRim:true,ornaments:true,icons:true,frame:true,

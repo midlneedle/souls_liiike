@@ -18,11 +18,15 @@ import {invader,invasionLettering} from './scenarios/assets';
 import {focusHeading} from './scenarios/focus';
 import SceneArtwork,{SceneEffectsContext,useSceneMotion} from './scenarios/SceneEffects';
 import NativeSpeech from './NativeSpeech';
+import {configureHaptics,haptic,stopHaptics} from './haptics';
 
 type Screen='menu'|'mimic'|'dislike'|'invasion'|'video';
 const flowTracks:Track[]=[{id:'relax-mimic',title:'Killing in the Name',artist:'Rage Against the Machine',cover:flowTrapTrack.cover},flowTrapTrack];
 const emptySaved=new Set<string>();
 export default function ScenarioApp({initialScreen='menu'}:{initialScreen?:Screen}={}){
+ const haptics=useDialKit('Хаптики',{enabled:true,interface:true,combat:true,rhythm:true,beat:true},{persist:{key:'companion:haptics:v1',storage:'localStorage'}});
+ useEffect(()=>{configureHaptics(haptics);},[haptics.enabled,haptics.interface,haptics.combat,haptics.rhythm,haptics.beat]);
+ useEffect(()=>()=>stopHaptics(),[]);
  const interfaceOptions=useDialKit('Интерфейс',{dock:true},{persist:{key:'companion:interface:v1',storage:'localStorage'}});
  const iconLight=useDialKit('Белые маски иконок',{opacity:[.45,0,1,.01]},{persist:{key:'companion:icon-white:v2',storage:'localStorage'}});
  const flowPlay=useDialKit('Play Моего потока',{playOffsetX:[0,-16,16,.5]},{persist:{key:'companion:flow-play:v1',storage:'localStorage'}});
@@ -50,7 +54,7 @@ export default function ScenarioApp({initialScreen='menu'}:{initialScreen?:Scree
  },[fighting,rhythm]);
  const startDuel=(track:Track)=>{setBattleTrack(track);setNotice('');setFighting(true);};
  const playerHeight=(width-16)/3;
- return <main ref={main} className="app scenario-app" data-screen={screen} data-fighting={fighting} data-rhythm-active={!!rhythm} style={{'--app-height':`${height}px`,'--icons-white':iconLight.opacity,'--flow-play-icon-x':`${flowPlay.playOffsetX}px`,'--mimic-play-lift':`${mimicPlay.lift}px`,'--mimic-lettering-gap':`${mimicLettering.gap}px`,'--mimic-shadow-x':`${mimicShadow.x}px`,'--mimic-shadow-y':`${mimicShadow.y}px`,'--mimic-shadow-blur':`${mimicShadow.blur}px`,'--mimic-shadow-color':mimicShadow.color,'--mini-player-height':`${playerHeight}px`,'--bottom-space':`${playerHeight+(interfaceOptions.dock?84:20)}px`,'--accent':'#d0cbc3','--background':'#000','--background-dark':'#000','--stage-top':'80px'} as CSSProperties}>
+ return <main ref={main} onClick={event=>{const target=event.target;if(!(target instanceof Element)||event.defaultPrevented)return;const button=target.closest('button');if(button&&!button.disabled&&!button.closest('[data-haptic="off"]'))haptic('tap');}} className="app scenario-app" data-screen={screen} data-fighting={fighting} data-rhythm-active={!!rhythm} style={{'--app-height':`${height}px`,'--icons-white':iconLight.opacity,'--flow-play-icon-x':`${flowPlay.playOffsetX}px`,'--mimic-play-lift':`${mimicPlay.lift}px`,'--mimic-lettering-gap':`${mimicLettering.gap}px`,'--mimic-shadow-x':`${mimicShadow.x}px`,'--mimic-shadow-y':`${mimicShadow.y}px`,'--mimic-shadow-blur':`${mimicShadow.blur}px`,'--mimic-shadow-color':mimicShadow.color,'--mini-player-height':`${playerHeight}px`,'--bottom-space':`${playerHeight+(interfaceOptions.dock?84:20)}px`,'--accent':'#d0cbc3','--background':'#000','--background-dark':'#000','--stage-top':'80px'} as CSSProperties}>
   {screen==='mimic'&&<MetalGlint/>}
   <SceneEffectsContext.Provider value={{...sceneEffects,magic,ash,suspended:modal}}>
   <div className="scenario-content" inert={modal}>
@@ -76,7 +80,7 @@ export default function ScenarioApp({initialScreen='menu'}:{initialScreen?:Scree
     {screen==='invasion'&&<InvasionScreen key="invasion" onChallenge={enterRhythm} onClose={()=>choose('menu')} message={notice}/>}
    </AnimatePresence>
    {screen==='mimic'&&<div className={`bottom-ui ${fighting?'dimmed':''}`} inert={modal}>
-    <MiniPlayer tracks={flowTracks} currentIndex={0} playing={playing} saved={emptySaved} showsHeart={!fighting} onPlay={()=>setPlaying(value=>!value)} onSave={()=>{choose('dislike');setBattleTrack(flowTrapTrack);}} onSwipeAttempt={()=>setNotice('А включал как уверенно.')}/>
+    <MiniPlayer tracks={flowTracks} currentIndex={0} playing={playing} saved={emptySaved} showsHeart={!fighting} onPlay={()=>setPlaying(value=>!value)} onSave={()=>{choose('dislike');setBattleTrack(flowTrapTrack);}} onSwipeAttempt={()=>{haptic('blocked');setNotice('А включал как уверенно.');}}/>
     {interfaceOptions.dock&&<nav className="dock" aria-label="Основная навигация"><button aria-current="page" onClick={()=>choose('menu')}><Icon name="ic_home" whiteMask/><span>Главная</span></button><button><Icon name="ic_catalog" whiteMask/><span>Каталог</span></button><button><Icon name="profile" whiteMask/><span>Моё</span></button></nav>}
    </div>}
    {notice&&screen!=='dislike'&&screen!=='invasion'&&<div className="scenario-notice" role="status">{notice}</div>}

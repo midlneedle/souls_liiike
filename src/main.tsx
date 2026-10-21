@@ -1,4 +1,5 @@
 import React from 'react';
+import {initializeHaptics} from './haptics';
 import { createRoot } from 'react-dom/client';
 import { MotionConfig } from 'motion/react';
 import App from './App';
@@ -8,4 +9,5 @@ import './native.css';
 import './gothic.css';
 import './rhythm.css';
 import './scenarios.css';
+initializeHaptics();
 createRoot(document.getElementById('root')!).render(<React.StrictMode><MotionConfig reducedMotion="user"><App /></MotionConfig></React.StrictMode>);

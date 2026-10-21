@@ -7,6 +7,8 @@ import type {RhythmAudio} from './rhythm/audio';
 import type {createRhythmScene} from './rhythm/scene';
 import InvasionBackdrop,{preloadInvasionArt} from './rhythm/InvasionBackdrop';
 import {useSceneMotion} from './scenarios/SceneEffects';
+import {beatTimes} from './rhythm/beatmap';
+import {haptic,stopHaptics} from './haptics';
 
 const KEY_LANES:Record<string,number>={KeyA:0,KeyS:1,KeyD:2,Digit1:0,Digit2:1,Digit3:2,ArrowLeft:0,ArrowDown:1,ArrowRight:2,Space:1};
 
@@ -18,18 +20,33 @@ export default function RhythmGame({audio,onClose}:{audio:RhythmAudio;onClose:(r
  const [status,setStatus]=useState<'loading'|'playing'|'paused'|'error'>('loading'),statusRef=useRef(status);statusRef.current=status;
  const cut=useRef<{at:number;direction:Slash;lane:number}|null>(null);
  const inputs=useRef(new Map<string,number>());
+ const feedback=useRef({health:MAX_HEALTH,hits:0,perfect:0,holding:new Set<number>(),resolved:new Set<number>(),finished:false});
+ const reportFeedback=()=>{
+  const g=game.current,f=feedback.current;
+  if(g.phase!=='playing'){
+   if(!f.finished){f.finished=true;haptic(g.phase==='won'?'rhythmWin':'rhythmLose');}
+  }else if(g.health<f.health)haptic('rhythmHurt');
+  else if(g.hits>f.hits){
+   const heldBlade=g.notes.some(n=>n.kind==='hold'&&n.status==='hit'&&!f.resolved.has(n.id));
+   haptic(heldBlade?'holdEnd':g.perfect>f.perfect?'rhythmPerfect':'rhythmHit');
+  }else if(g.notes.some(n=>n.status==='holding'&&!f.holding.has(n.id)))haptic('hold');
+  f.health=g.health;f.hits=g.hits;f.perfect=g.perfect;
+  f.holding=new Set(g.notes.filter(n=>n.status==='holding').map(n=>n.id));
+  for(const n of g.notes)if(n.status==='hit')f.resolved.add(n.id);
+ };
+ const report=useRef(reportFeedback);report.current=reportFeedback;
  const press=(lane:number,id:string)=>{
   if(statusRef.current!=='playing'||game.current.phase!=='playing'||inputs.current.has(id))return;
   const alreadyHeld=[...inputs.current.values()].includes(lane);inputs.current.set(id,lane);if(alreadyHeld)return;
-  const time=audio.time,note=game.current.tap(time,lane);if(note&&note.kind!=='bomb')cut.current={at:time,direction:note.direction,lane};
+  const time=audio.time,note=game.current.tap(time,lane);if(note&&note.kind!=='bomb')cut.current={at:time,direction:note.direction,lane};report.current();
  };
  const release=(id:string,cancelled=false)=>{
   const lane=inputs.current.get(id);if(lane===undefined)return;inputs.current.delete(id);
-  if(statusRef.current==='playing'&&![...inputs.current.values()].includes(lane))game.current.release(audio.time,lane,cancelled);
+  if(statusRef.current==='playing'&&![...inputs.current.values()].includes(lane)){game.current.release(audio.time,lane,cancelled);report.current();}
  };
  const input=useRef({press,release});input.current={press,release};
  useEffect(()=>{
-  let cancelled=false,frame=0,finishTimer:ReturnType<typeof setTimeout>|null=null;
+  let cancelled=false,frame=0,nextBeat=0,finishTimer:ReturnType<typeof setTimeout>|null=null;
   Promise.all([import('./rhythm/scene.js'),preloadInvasionArt()]).then(async ([module])=>{
    if(cancelled||!host.current)return;
    scene.current=module.createRhythmScene(host.current,game.current.notes,{
@@ -47,7 +64,15 @@ export default function RhythmGame({audio,onClose}:{audio:RhythmAudio;onClose:(r
    const tick=()=>{
     if(cancelled)return;
     if(!document.hidden){
-     if(audio.started&&audio.context.state==='running')game.current.advance(audio.time);
+     if(audio.started&&audio.context.state==='running'){
+      const time=audio.time;game.current.advance(time);report.current();
+      // Follow the same measured MP3 onsets as the chart; never catch up missed pulses.
+      let beat=-1;while(nextBeat<beatTimes.length&&beatTimes[nextBeat]<=time)beat=nextBeat++;
+      if(beat>=0&&time-beatTimes[beat]<.09&&game.current.phase==='playing'){
+       if(game.current.notes.some(n=>n.status==='holding'))haptic('hold');
+       else haptic(beat%4===0?'downbeat':'beat');
+      }
+     }
      scene.current?.render(game.current,cut.current,reducedRef.current);
      if(game.current.phase!=='playing'&&!finishTimer){
       audio.pause();finishTimer=setTimeout(()=>close.current({won:game.current.phase==='won',health:game.current.health/MAX_HEALTH,hits:game.current.hits}),1800);
@@ -56,7 +81,7 @@ export default function RhythmGame({audio,onClose}:{audio:RhythmAudio;onClose:(r
     frame=requestAnimationFrame(tick);
    };frame=requestAnimationFrame(tick);
   }).catch(()=>{if(!cancelled){audio.pause();setStatus('error');}});
-  const pause=()=>{if(game.current.phase==='playing'&&statusRef.current==='playing'){audio.pause();game.current.suspend();inputs.current.clear();statusRef.current='paused';setStatus('paused');}};
+  const pause=()=>{if(game.current.phase==='playing'&&statusRef.current==='playing'){audio.pause();stopHaptics();game.current.suspend();inputs.current.clear();statusRef.current='paused';setStatus('paused');}};
   const visibility=()=>{if(document.hidden)pause();};
   const key=(event:KeyboardEvent)=>{
    if(event.key==='Escape'){event.preventDefault();close.current();return;}
@@ -66,7 +91,7 @@ export default function RhythmGame({audio,onClose}:{audio:RhythmAudio;onClose:(r
   };
   const keyUp=(event:KeyboardEvent)=>{if(KEY_LANES[event.code]!==undefined){event.preventDefault();input.current.release(`key:${event.code}`);}};
   window.addEventListener('keydown',key);window.addEventListener('keyup',keyUp);window.addEventListener('blur',pause);document.addEventListener('visibilitychange',visibility);
-  return()=>{cancelled=true;cancelAnimationFrame(frame);if(finishTimer)clearTimeout(finishTimer);inputs.current.clear();scene.current?.dispose();scene.current=null;window.removeEventListener('keydown',key);window.removeEventListener('keyup',keyUp);window.removeEventListener('blur',pause);document.removeEventListener('visibilitychange',visibility);};
+  return()=>{cancelled=true;stopHaptics();cancelAnimationFrame(frame);if(finishTimer)clearTimeout(finishTimer);inputs.current.clear();scene.current?.dispose();scene.current=null;window.removeEventListener('keydown',key);window.removeEventListener('keyup',keyUp);window.removeEventListener('blur',pause);document.removeEventListener('visibilitychange',visibility);};
  },[audio]);
  return <motion.section ref={arena} className={`rhythm-game rhythm-${status}`} role="region" aria-label="Вторжение артиста. Три жизни. Слева синяя дорожка, в центре золотая, справа красная. Нажимай, когда камень окажется над полоской своей цветной плитки. Длинные клинки удерживай от острия до рукояти. Парные камни нажимай двумя пальцами. Колючие ловушки пропускай. Клавиши A S D или 1 2 3 можно нажимать и удерживать одновременно." initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:.45}}>
   <InvasionBackdrop paused={status==='paused'||status==='error'}/>

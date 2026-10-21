@@ -15,19 +15,26 @@ export function woodTexture(){const canvas=document.createElement('canvas');canv
  for(let y=0;y<32;y++)for(let x=0;x<32;x++){const grain=(x%8===0?-26:0)+Math.floor(rand()*22);ctx.fillStyle=`rgb(${112+grain},${94+grain},${68+grain})`;ctx.fillRect(x,y,1,1);}
  const texture=new T.CanvasTexture(canvas);texture.colorSpace=T.SRGBColorSpace;texture.magFilter=T.NearestFilter;texture.minFilter=T.NearestFilter;texture.generateMipmaps=false;return texture;
 }
-export async function createMimicScene(host,sourceURL,replacementURL,round=false){
- const textures=await Promise.allSettled([imageTexture(sourceURL,round),imageTexture(replacementURL)]);
- if(textures.some(t=>t.status==='rejected')){textures.forEach(t=>{if(t.status==='fulfilled')t.value.dispose();});throw new Error('Mimic textures unavailable');}
- const coverMap=textures[0].value,replacementMap=textures[1].value;
+async function buttonTexture(rimURL,layers){
+ const load=url=>new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>reject(new Error('Mimic button unavailable'));image.src=url;});
+ const [rim,background,icon]=await Promise.all([load(rimURL),load(layers.background),load(layers.icon)]);
+ const canvas=document.createElement('canvas');canvas.width=canvas.height=512;const context=canvas.getContext('2d');
+ context.drawImage(background,18,18,476,476);context.drawImage(rim,-101.7,-101.7,715.4,715.4);context.drawImage(icon,133,124,264,264);
+ const texture=new T.CanvasTexture(canvas);texture.colorSpace=T.SRGBColorSpace;texture.magFilter=T.LinearFilter;texture.minFilter=T.LinearMipmapLinearFilter;return texture;
+}
+export async function createMimicScene(host,sourceURL,replacementURL,round=false,buttonLayers=null){
+ const textures=await Promise.allSettled([buttonLayers?buttonTexture(sourceURL,buttonLayers):imageTexture(sourceURL,round),buttonLayers?Promise.resolve(null):imageTexture(replacementURL)]);
+ if(textures.some(t=>t.status==='rejected')){textures.forEach(t=>{if(t.status==='fulfilled')t.value?.dispose();});throw new Error('Mimic textures unavailable');}
+ const coverMap=textures[0].value,replacementMap=textures[1].value??coverMap;
  let renderer;
- try{renderer=new T.WebGLRenderer({alpha:true,antialias:false,powerPreference:'low-power'});}catch(error){coverMap.dispose();replacementMap.dispose();throw error;}
+ try{renderer=new T.WebGLRenderer({alpha:true,antialias:false,powerPreference:'low-power'});}catch(error){new Set([coverMap,replacementMap]).forEach(texture=>texture.dispose());throw error;}
  renderer.setClearColor(0x000000,0);renderer.outputColorSpace=T.SRGBColorSpace;
  renderer.domElement.setAttribute('aria-hidden','true');host.appendChild(renderer.domElement);
  const scene=new T.Scene(),camera=new T.OrthographicCamera(-198,198,178,-178,1,2000);camera.position.z=700;camera.lookAt(0,0,0);
  const ambient=new T.AmbientLight(0xd7c9b6,1.3);scene.add(ambient);
  const key=new T.DirectionalLight(0xf9dfad,2);key.position.set(-120,200,300);scene.add(key);
  const rim=new T.DirectionalLight(0x6385a5,1.8);rim.position.set(200,50,-60);scene.add(rim);
- const model=createMimicModel({woodMap:woodTexture(),coverMap,replacementMap,round});scene.add(model.root);
+ const model=createMimicModel({woodMap:woodTexture(),coverMap,replacementMap,round,button:!!buttonLayers});scene.add(model.root);
  const hybrid=createHybridRenderer(renderer,scene,camera,model.root);hybrid.resize(396,356);
  let disposed=false;
  return {

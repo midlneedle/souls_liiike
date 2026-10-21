@@ -63,7 +63,7 @@ void main(){
   gl_FragColor=vec4(rock*shade+ash*enabled,1.);
 }`;
 
-export default function StoneBackground(){
+export default function StoneBackground({controls=true}:{controls?:boolean}={}){
  const p=useDialKit('Камень и пепел',{
   ash:true, density:[39,0,48,1], speed:[.8,0,2,.05], wind:[-.2,-1,1,.05],
   glow:[1.2,0,2,.05], light:[.8, .4,1.8,.05], ember:'#bc7150',
@@ -134,5 +134,5 @@ export default function StoneBackground(){
    gl.getExtension('WEBGL_lose_context')?.loseContext();
   };
  },[]);
- return <><div className="ambient stone-background" ref={host} aria-hidden="true"/><DialRoot position="top-right" defaultOpen={false} productionEnabled /></>;
+ return <><div className="ambient stone-background" ref={host} aria-hidden="true"/>{controls&&<DialRoot position="top-right" defaultOpen={false} productionEnabled />}</>;
 }

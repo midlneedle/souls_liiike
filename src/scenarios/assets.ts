@@ -1,0 +1,10 @@
+import frame from '../../textures/optimized/frame-mimic.webp';
+import illustration from '../../textures/optimized/mimic-asti.webp';
+import invader from '../../textures/optimized/invasion-krid.webp';
+import disc from '../../textures/optimized/play-disc-mimic.webp';
+import rim from '../../textures/play_button_rim.webp';
+import play from '../../textures/play_icon.webp';
+import cat from '../../textures/vid/cat.mp4';
+import invasionLettering from '../../textures/bachelor_text.svg';
+export {frame,illustration,invader,disc,rim,cat,invasionLettering};
+export const buttonLayers={background:disc,icon:play};

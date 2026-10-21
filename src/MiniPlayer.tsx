@@ -4,7 +4,8 @@ import {animate,motion,useMotionValue} from 'motion/react';
 import type {Track} from './data';
 import {Icon,PlaybackGlyph} from './ui';
 
-// Textured player: 78px cards inside a 110px frame, 18px side insets, 8px between cards.
+// Textured player: frame height follows its 3:1 artwork in the scenario UI.
+// Cards keep 18px side insets and 8px between neighbours.
 // Gesture competes with button taps only after the native 18px drag threshold.
 export default function MiniPlayer({tracks,currentIndex,playing,saved,showsHeart,onPlay,onSave,onSwipeAttempt}:{tracks:Track[];currentIndex:number;playing:boolean;saved:Set<string>;showsHeart:boolean;onPlay:()=>void;onSave:(track:Track)=>void;onSwipeAttempt:()=>void}){
  const x=useMotionValue(0),animation=useRef<ReturnType<typeof animate>|null>(null);

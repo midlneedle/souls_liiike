@@ -2,14 +2,14 @@ import {useEffect,useRef} from 'react';
 import {MIMIC_TIMING,mimicPose} from './mimic/timing';
 import type {MimicPhase} from './mimic/timing';
 import type {createMimicScene} from './mimic/scene';
-export default function MimicStage({sourceURL,replacementURL,round,phase,active,size,reduced,onReady}:{sourceURL:string;replacementURL:string;round:boolean;phase:MimicPhase;active:boolean;size:number;reduced:boolean;onReady:(ready:boolean)=>void}){
+export default function MimicStage({sourceURL,replacementURL,round,phase,active,size,reduced,onReady,buttonLayers}:{sourceURL:string;replacementURL:string;round:boolean;phase:MimicPhase;active:boolean;size:number;reduced:boolean;onReady:(ready:boolean)=>void;buttonLayers?:{background:string;icon:string}}){
  const host=useRef<HTMLDivElement>(null),scene=useRef<Awaited<ReturnType<typeof createMimicScene>>|null>(null);
  const props=useRef({phase,active,size,reduced,onReady});props.current={phase,active,size,reduced,onReady};
  const clock=useRef({phase,started:0,size});
  useEffect(()=>{
   let cancelled=false,frame=0,lastFrame=0;
   props.current.onReady(false);
-  import('./mimic/scene.js').then(module=>{if(cancelled||!host.current)return;return module.createMimicScene(host.current,sourceURL,replacementURL,round);}).then(instance=>{
+  import('./mimic/scene.js').then(module=>{if(cancelled||!host.current)return;return module.createMimicScene(host.current,sourceURL,replacementURL,round,buttonLayers);}).then(instance=>{
    if(!instance)return;if(cancelled){instance.dispose();return;}scene.current=instance;props.current.onReady(true);
    const tick=(now:number)=>{
     const p=props.current;
@@ -25,6 +25,6 @@ export default function MimicStage({sourceURL,replacementURL,round,phase,active,
    };frame=requestAnimationFrame(tick);
   }).catch(()=>{if(!cancelled)props.current.onReady(false);});
   return()=>{cancelled=true;cancelAnimationFrame(frame);scene.current?.dispose();scene.current=null;};
- },[sourceURL,replacementURL,round]);
+ },[sourceURL,replacementURL,round,buttonLayers]);
  return <div ref={host} className={`mimic-canvas ${active?'visible':''}`} aria-hidden="true"/>;
 }

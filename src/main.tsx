@@ -7,4 +7,5 @@ import './style.css';
 import './native.css';
 import './gothic.css';
 import './rhythm.css';
+import './scenarios.css';
 createRoot(document.getElementById('root')!).render(<React.StrictMode><MotionConfig reducedMotion="user"><App /></MotionConfig></React.StrictMode>);

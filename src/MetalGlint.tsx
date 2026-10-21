@@ -5,6 +5,7 @@ import rim from '../textures/play_button_rim.webp';
 import resourceRim from '../textures/play_button_resource_rim.webp';
 import coverResourceRim from '../textures/cover_resource_rim.webp';
 import ornament from '../textures/ornament.webp';
+import mimicFrame from '../textures/optimized/frame-mimic.webp';
 
 const vertex=`attribute vec2 position,texcoord;varying vec2 uv,screenUV;
 void main(){uv=texcoord;screenUV=position*.5+.5;gl_Position=vec4(position,0.,1.);}`;
@@ -34,7 +35,7 @@ export default function MetalGlint(){
  const p=useDialKit('Металлический блик',{
   enabled:true,intensity:[.32,0,1,.01],duration:[9,3,24,.5],width:[.035,.01,.18,.005],
   tilt:[.12,-.5,.5,.01],color:'#d6e8ff',
-  miniPlayer:true,playRim:true,ornaments:true,icons:true,
+  miniPlayer:true,playRim:true,ornaments:true,icons:true,frame:true,
  },{persist:{key:'companion:metal-light:v1',storage:'localStorage'}});
  const host=useRef<HTMLSpanElement>(null),settings=useRef(p);settings.current=p;
  useEffect(()=>{
@@ -91,9 +92,11 @@ export default function MetalGlint(){
    const surfaces:Surface[]=[];
    if(v.miniPlayer)root.querySelectorAll<HTMLElement>('.mini-card').forEach(el=>surfaces.push({el,src:player,pseudo:'player'}));
    if(v.playRim)root.querySelectorAll<HTMLElement>('.main-play').forEach(el=>surfaces.push({el,src:el.classList.contains('flow-play')?resourceRim:rim,pseudo:'rim'}));
+   if(v.playRim)root.querySelectorAll<HTMLElement>('.scenario-play').forEach(el=>surfaces.push({el,src:rim,pseudo:'rim'}));
    if(v.playRim)root.querySelectorAll<HTMLElement>('.cover-resources').forEach(el=>surfaces.push({el,src:coverResourceRim,pseudo:'rim'}));
    if(v.ornaments)root.querySelectorAll<HTMLElement>('.entity-card').forEach(el=>surfaces.push({el,src:ornament,pseudo:'ornament'}));
-   if(v.icons)root.querySelectorAll<HTMLElement>('.companion .texture-icon,.bottom-ui .texture-icon').forEach(el=>{
+   if(v.frame)root.querySelectorAll<HTMLElement>('.mimic-frame').forEach(el=>surfaces.push({el,src:mimicFrame}));
+   if(v.icons)root.querySelectorAll<HTMLElement>('.companion .texture-icon,.mimic-home .texture-icon,.bottom-ui .texture-icon').forEach(el=>{
     const image=el instanceof HTMLImageElement?el:el.querySelector('img');
     if(image)surfaces.push({el,src:image.currentSrc||image.src});
    });

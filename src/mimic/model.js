@@ -1,7 +1,7 @@
 import * as T from 'three';
 
 // Articulated low-poly chest mimic. All geometry is local; no downloaded model.
-export function createMimicModel({woodMap=null,coverMap=null,replacementMap=null,round=false}={}) {
+export function createMimicModel({woodMap=null,coverMap=null,replacementMap=null,round=false,button=false}={}) {
  const root=new T.Group();root.name='mimic';
  const trackedTextures=new Set([woodMap,coverMap,replacementMap].filter(Boolean));
  const material=(color,map=null)=>new T.MeshLambertMaterial({color,map,flatShading:true});
@@ -74,10 +74,10 @@ export function createMimicModel({woodMap=null,coverMap=null,replacementMap=null
   tongueRoot.position.set(0,-30,92);tongueRoot.scale.setScalar(Math.max(.01,p.open));
   tongue.forEach((pivot,i)=>{pivot.rotation.x=.35+Math.sin(progress*7+i*.6)*.17;pivot.rotation.z=Math.sin(i*.7+progress*5)*.09;});
   for(const a of arms){const s=a.side;const shoulder=new T.Vector3(s*78,20,-65),elbow=new T.Vector3(s*(88+r*59),20-r*35,-50+r*10),wrist=new T.Vector3(s*(76+r*24),-20+r*12,15+r*33);connect(a.upperArm,shoulder,elbow);connect(a.forearm,elbow,wrist);a.elbow.position.copy(elbow);a.hand.position.copy(wrist);a.hand.rotation.z=s*(.28+.2*(1-r));}
-  cover.visible=phase!=='appearing';cover.position.set(0,0,p.coverZ);cover.scale.setScalar((phase==='parried'?size+(200-size)*progress:size)*Math.max(0,p.coverScale));if(phase==='parried')cover.position.y=8*progress;
+  cover.visible=phase!=='appearing';cover.position.set(0,0,p.coverZ);cover.scale.setScalar((phase==='parried'&&!button?size+(200-size)*progress:size)*Math.max(0,p.coverScale));if(phase==='parried'&&!button)cover.position.y=8*progress;
   topPivot.rotation.x=-p.fold*1.45;bottomPivot.rotation.x=p.fold*1.45;cover.rotation.z=p.fold*.16;
   spit.visible=phase==='appearing';const bounce=Math.sin(Math.min(1,p.replacement)*Math.PI)*.1;
-  spit.scale.setScalar(200*Math.max(.001,p.replacement)*(1+bounce));spit.position.set(0,8*p.replacement,22+55*Math.sin(p.replacement*Math.PI));spit.rotation.z=(1-p.replacement)*-.35;
+  spit.scale.setScalar((button?size:200)*Math.max(.001,p.replacement)*(1+bounce));spit.position.set(0,(button?0:8)*p.replacement,22+55*Math.sin(p.replacement*Math.PI));spit.rotation.z=(1-p.replacement)*-.35;
   emberMat.opacity=phase==='parried'?Math.max(0,1-progress*2):0;
   sparks.forEach((spark,i)=>{const a=i/8*Math.PI*2;spark.position.set(Math.cos(a)*progress*150,Math.sin(a)*progress*110,75);spark.rotation.z=a;});
  }

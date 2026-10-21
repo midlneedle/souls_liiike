@@ -36,3 +36,13 @@ test('scene geometry and materials are released after the animation',()=>{
  for(const material of uniqueMaterials)material.addEventListener('dispose',()=>materials++);
  model.dispose();assert.ok(geometries>50);assert.equal(materials,uniqueMaterials.size);
 });
+test('biting a Play button returns it at the same size and position instead of growing to an album cover',()=>{
+ const model=createMimicModel({round:true,button:true});
+ for(const size of [96,112,132]){
+  model.pose(mimicPose('appearing',1),'appearing',1,size);
+  assert.equal(model.spit.scale.x,size);assert.equal(model.spit.position.y,0);
+  model.pose(mimicPose('parried',1),'parried',1,size);
+  assert.equal(model.cover.scale.x,size);assert.equal(model.cover.position.y,0);
+ }
+ model.dispose();
+});

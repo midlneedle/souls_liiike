@@ -1,0 +1,92 @@
+/* Scenario typography uses the Source Serif files already supplied with the project. */
+body{background:#000}
+.scenario-app{height:100svh;max-width:500px;min-height:0;background:#000;--silver:#dedbd6;font-family:'Source Serif Pro',Georgia,serif;letter-spacing:-.04em}
+.scenario-content,.scenario-screen{position:absolute;inset:0}
+.scenario-screen{overflow:hidden;background:#000}
+.scenario-app button{letter-spacing:-.04em}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+.scenario-menu{display:flex;flex-direction:column;justify-content:space-between;gap:24px;padding:calc(var(--safe-top) + clamp(24px,12svh,108px)) 12px calc(var(--safe-bottom) + clamp(20px,7svh,63px));overflow-y:auto;isolation:isolate}
+.scenario-menu>.stone-background{z-index:-1}
+.scenario-menu-options{position:relative;display:grid;gap:10px;flex-shrink:0}
+.scenario-menu-button{position:relative;display:grid;place-items:center;width:100%;height:auto;aspect-ratio:357/119;flex-shrink:0;padding:20px 30px;font-size:24px;font-weight:500;line-height:1;background:url('../textures/plas.webp') center/contain no-repeat;color:#d8d6d2}
+.scenario-menu-close{position:relative;width:100%}
+.scenario-menu-button>span{transform:translateY(-3px);filter:blur(.4px)}
+.scenario-menu-button:active{transform:scale(.98)}
+.mimic-content{position:absolute;inset:var(--safe-top) 0 calc(var(--bottom-space) + var(--safe-bottom));display:flex;align-items:center;justify-content:center;padding-bottom:28px}
+.mimic-hero{position:relative;width:min(calc(100% - 44px),calc((var(--app-height) - var(--bottom-space) - var(--safe-top) - var(--safe-bottom) - 68px)*.648));aspect-ratio:784/1210;isolation:isolate}
+.mimic-illustration{position:absolute;left:-10%;top:0;width:120%;height:100%;object-fit:cover;mask-image:linear-gradient(to bottom,transparent,#000 12%,#000 86%,transparent),linear-gradient(to right,transparent,#000 10%,#000 90%,transparent);mask-composite:intersect;-webkit-mask-composite:source-in}
+.mimic-frame{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:1;pointer-events:none}
+.mimic-frame-layer{position:absolute;inset:0;z-index:1;pointer-events:none}
+.mimic-frame-layer .ornate-close{pointer-events:auto}
+/* Both generated layers share the original crop and coordinate system. */
+.scene-artwork{pointer-events:none;overflow:hidden}
+.scene-artwork img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:inherit;max-width:none}
+.scene-split{position:absolute;inset:0;object-position:inherit;animation:scene-reveal .45s ease-out both}
+.scene-artwork[data-layered=true] .scene-original{opacity:0;transition:opacity .45s ease-out}
+.scene-artwork .scene-background{inset:-14px;width:calc(100% + 28px);height:calc(100% + 28px);transform:translate3d(calc(var(--scene-x,0px)*-1),calc(var(--scene-y,0px)*-1),0)}
+.scene-artwork .scene-character{inset:-8px;width:calc(100% + 16px);height:calc(100% + 16px);transform:translate3d(calc(var(--scene-x,0px)*.55),calc(var(--scene-y,0px)*.55),0)}
+.scene-atmosphere{position:absolute;inset:0;pointer-events:none}
+.scene-atmosphere canvas{display:block;width:100%;height:100%}
+@keyframes scene-reveal{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.scene-split{animation:none}.scene-artwork[data-layered=true] .scene-original{transition:none}}
+.ornate-close{position:absolute;width:44px;height:44px;display:grid;place-items:center;padding:0;z-index:5;isolation:isolate;opacity:.78;filter:drop-shadow(0 1px 2px #0009);transition:transform .18s ease,opacity .18s ease}
+.ornate-close-disc,.ornate-close-rim{position:absolute;left:50%;top:50%;translate:-50% -50%;object-fit:contain;pointer-events:none}
+.ornate-close-disc{width:25px;height:25px;filter:sepia(1) saturate(2) hue-rotate(310deg) brightness(.5)}
+.ornate-close-rim{width:36px;height:36px;filter:sepia(.2) saturate(.65) brightness(.72)}
+.ornate-close-mark{position:relative;display:block;width:16px;height:16px;pointer-events:none;filter:brightness(1.25) drop-shadow(0 1px 1px #000)}
+/* Cross the first textured Pause bar twice; the strokes keep the supplied stone grain. */
+.ornate-close-stroke{position:absolute;left:50%;top:50%;width:4.5px;height:14px;overflow:hidden;transform:translate(-50%,-50%) rotate(45deg)}
+.ornate-close-stroke+ .ornate-close-stroke{transform:translate(-50%,-50%) rotate(-45deg)}
+.ornate-close-stroke img{position:absolute;left:-1.44px;top:-1.73px;width:14px;height:17.18px;max-width:none;pointer-events:none}
+.ornate-close:hover,.ornate-close:focus-visible{opacity:1}
+.ornate-close:active:not(:disabled){opacity:1;filter:drop-shadow(0 1px 2px #0009) brightness(1.1)}
+.mimic-frame-close{left:86%;top:6.8%;translate:-50% -50%}
+.mimic-frame-close:active{transform:scale(.94)}
+.mimic-lettering{position:absolute;left:-8%;right:-8%;bottom:calc(var(--mimic-play-size,112px) - 8px);text-align:center;color:#e8e6e3;z-index:2;font-weight:600;line-height:1;letter-spacing:-.04em;text-shadow:0 0 10px #0008;outline:none}
+.mimic-lettering span{display:block;font-size:20px;font-weight:600;line-height:1;white-space:nowrap;margin-bottom:4px}
+.mimic-lettering strong{display:block;font-size:60px;font-weight:600;line-height:1;letter-spacing:-.04em;white-space:nowrap}
+.mimic-play-anchor{position:absolute;left:50%;bottom:-20px;width:32%;min-width:96px;max-width:132px;aspect-ratio:1;transform:translateX(-50%);z-index:3}
+.scenario-play{position:absolute;inset:0;width:100%;height:100%;padding:0;border-radius:50%;display:grid;place-items:center;isolation:isolate;touch-action:manipulation}
+.scenario-play:before{content:'';position:absolute;inset:4px;z-index:-1;border-radius:50%;background:url('../textures/optimized/play-disc-mimic.webp') center/100% 100% no-repeat}
+.scenario-play:after{content:'';position:absolute;left:50%;top:50%;width:139.725%;height:139.725%;transform:translate(-50%,-50%);background:url('../textures/play_button_rim.webp') center/contain no-repeat;pointer-events:none;z-index:1}
+.scenario-play .texture-play{margin-left:calc(2px + var(--flow-play-icon-x,0px))}
+.mimic-play-anchor.biting .scenario-play{visibility:hidden}
+.mimic-play-anchor.biting.phase-warning .scenario-play{visibility:visible;opacity:0}
+.mimic-play-anchor .mimic-canvas{left:50%;top:50%;transform:translate(-50%,-50%);z-index:2}
+.scenario-app .bottom-ui{background:#000;font-family:'Source Serif Pro',Georgia,serif}
+.scenario-app .mini-player{height:var(--mini-player-height)}
+.scenario-app .mini-strip{height:calc(var(--mini-player-height) - 32px)}
+.scenario-app .mini-card:before{background-size:contain}
+.scenario-app .mini-title strong{letter-spacing:-.04em}
+.scenario-app .mini-title span,.scenario-app .dock{font-family:Inter,Arial,sans-serif;letter-spacing:-.04em}
+.scenario-app .scenario-prompt{padding-top:var(--safe-top)}
+.scenario-description{font-size:20px;line-height:1.02;font-weight:500;letter-spacing:-.04em;text-align:center;color:#d4d2cf;outline:none}
+.scenario-prompt-bottom{position:absolute;left:calc(24px + env(safe-area-inset-left,0px));right:calc(24px + env(safe-area-inset-right,0px));bottom:calc(var(--safe-bottom) + 52px);z-index:2}
+.scenario-actions{display:grid;gap:12px;margin-top:36px}
+.scenario-action{position:relative;display:grid;place-items:center;height:74px;min-height:74px;width:100%;padding:12px;font-family:inherit;font-size:24px;font-weight:500;line-height:1;letter-spacing:-.04em;border-radius:8px;color:#d9d7d2;background:transparent}
+.scenario-action-primary:before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(135deg,#fff0 10%,#fff 100%);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;-webkit-mask-composite:xor;pointer-events:none}
+.dislike-character{position:absolute;inset:12% 0 auto;height:51%;pointer-events:none}
+.dislike-character .battle-stage{transform:scale(1.18);transform-origin:center}
+.dislike-loading-cover{position:absolute;width:112px;height:112px;object-fit:cover;left:50%;top:15%;transform:translateX(-50%);border-radius:14px}
+.invasion-illustration{position:absolute;left:0;top:11%;width:100%;height:66%;object-fit:cover;object-position:50% 30%;mask-image:radial-gradient(ellipse 65% 52% at 50% 48%,#000 38%,#000e 52%,#0009 68%,#0003 84%,transparent 100%);-webkit-mask-image:radial-gradient(ellipse 65% 52% at 50% 48%,#000 38%,#000e 52%,#0009 68%,#0003 84%,transparent 100%)}
+.invasion-description{position:absolute;top:calc(var(--safe-top) + 42px);left:20px;right:20px;z-index:2}
+.invasion-title{display:block;width:min(100%,282px);height:auto;margin:0 auto 44px}
+.invasion-prompt .scenario-actions{margin-top:0}
+.scenario-notice{position:absolute;left:24px;right:24px;bottom:calc(var(--bottom-space) + var(--safe-bottom));z-index:8;text-align:center;font-size:20px;line-height:1.1;color:#dedbd6;background:#000c;border-radius:10px;padding:12px;pointer-events:none}
+.scenario-app[data-screen=invasion] .scenario-notice,.scenario-app[data-screen=dislike] .scenario-notice{bottom:calc(var(--safe-bottom) + 15px)}
+.scenario-app[data-fighting=true] .scenario-content,.scenario-app[data-rhythm-active=true] .scenario-content{opacity:0;pointer-events:none}
+.scenario-app>.duel{left:0;right:0;top:var(--safe-top);bottom:var(--safe-bottom);height:auto}
+.scenario-app>.duel .duel-arena{inset:0;height:100%}
+.scenario-battle-back{position:absolute;left:18px;top:calc(var(--safe-top) + 16px);z-index:22;width:44px;height:44px;display:grid;place-items:center;padding:0}
+.cat-page{display:grid;place-items:center;padding:var(--safe-top) 0 var(--safe-bottom);background:#000}
+.cat-dialog{width:min(calc(100% - 44px),calc((var(--app-height) - var(--safe-top) - var(--safe-bottom) - 68px)*.648));outline:none}
+.cat-framed-content{position:relative;aspect-ratio:784/1210;isolation:isolate}
+.cat-video-window{position:absolute;inset:0;mask:url('./scenarios/video-window.svg') center/100% 100% no-repeat;-webkit-mask:url('./scenarios/video-window.svg') center/100% 100% no-repeat}
+.cat-dialog video{position:absolute;inset:0;display:block;width:100%;height:100%;background:#000;object-fit:cover;object-position:center}
+/* Use the whole original frame at its portrait aspect ratio, as on Mimic. */
+.cat-frame{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:2;pointer-events:none}
+.cat-frame-close{left:86%;top:6.8%;translate:-50% -50%}
+.cat-frame-close:active{transform:scale(.94)}
+@media(min-width:600px){.scenario-app{height:min(900px,100svh)}}
+@media(max-width:390px){.mimic-lettering strong{font-size:clamp(44px,15.38vw,60px)}.mimic-lettering span{font-size:clamp(16px,5.128vw,20px)}}
+@media(max-height:720px){.scenario-menu{padding-top:calc(var(--safe-top) + 24px);padding-bottom:calc(var(--safe-bottom) + 20px);gap:16px}.scenario-menu-options{gap:6px}.scenario-prompt-bottom{bottom:calc(var(--safe-bottom) + 18px)}.scenario-actions{margin-top:22px;gap:4px}.invasion-title{margin-bottom:24px}.invasion-description{top:calc(var(--safe-top) + 24px)}.mimic-content{padding-bottom:14px}.mimic-hero{width:min(calc(100% - 44px),calc((var(--app-height) - var(--bottom-space) - var(--safe-top) - var(--safe-bottom) - 50px)*.648))}.mimic-lettering strong{font-size:48px}.mimic-lettering span{font-size:17px}}

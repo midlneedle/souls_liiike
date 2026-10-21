@@ -5,6 +5,6 @@ import disc from '../../textures/optimized/play-disc-mimic.webp';
 import rim from '../../textures/play_button_rim.webp';
 import play from '../../textures/play_icon.webp';
 import cat from '../../textures/vid/cat.mp4';
-import invasionLettering from '../../textures/bachelor_text.svg';
+import invasionLettering from '../../textures/mimic_lettering.webp';
 export {frame,illustration,invader,disc,rim,cat,invasionLettering};
 export const buttonLayers={background:disc,icon:play};

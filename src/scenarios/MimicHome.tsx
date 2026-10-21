@@ -2,7 +2,7 @@ import {useEffect,useRef,useState} from 'react';
 import type {CSSProperties} from 'react';
 import {motion,useReducedMotion} from 'motion/react';
 import PhotoMimic from './PhotoMimic';
-import mimicLettering from '../../textures/mimic_lettering.svg';
+import mimicLettering from '../../textures/lettering_mimic.webp';
 import {haptic,stopHaptics} from '../haptics';
 import mimicTaunt from '../../textures/generated/mimic_evil.webp';
 import mimicBite from '../../textures/generated/mimic_evil_eat_play.webp';
@@ -58,7 +58,7 @@ export default function MimicHome({playing,onPlayingChange,onClose}:{playing:boo
     <img className="mimic-frame" src={frame} alt="" draggable={false}/>
     <OrnateClose className="mimic-frame-close" onClick={()=>{clear();setPhase('idle');setFailed(false);change.current(false);onClose();}}/>
     </div>
-    <h1 ref={focusHeading} tabIndex={-1} className="mimic-lettering"><img src={mimicLettering} alt="МУЗЫКАЛЬНЫЙ ПОТОК ДЛЯ РИЛАКСА" width={394} height={109} draggable={false}/></h1>
+    <h1 ref={focusHeading} tabIndex={-1} className="mimic-lettering"><img src={mimicLettering} alt="МУЗЫКАЛЬНЫЙ ПОТОК ДЛЯ РИЛАКСА" width={1584} height={436} draggable={false}/></h1>
     <div className={`mimic-play-anchor photo-mimic-anchor phase-${phase}`}>
      <PhotoMimic phase={phase} reduced={!!reduced}/>
      <motion.button ref={button} className="scenario-play" data-haptic="off" aria-label={phase==='warning'?'Парировать мимика':playing?'Пауза':'Включить музыкальный поток'} disabled={failed||(running&&phase!=='warning')} onClick={play} animate={{scale:phase==='vanishing'||phase==='appearing'||failed?0:1,opacity:phase==='vanishing'||phase==='appearing'||failed?0:1,rotate:phase==='vanishing'?-14:0}} transition={{duration:phase==='vanishing'?.32:.24,delay:phase==='vanishing'?.58:0,ease:[.22,1,.36,1]}}>

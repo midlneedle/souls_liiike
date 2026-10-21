@@ -99,7 +99,7 @@ function InvasionScreen({onChallenge,onClose,message}:{onChallenge:()=>void;onCl
  return <motion.section ref={scene} className="scenario-prompt invasion-prompt scenario-screen" aria-label="Вторжение артиста" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:.3}}>
      <SceneArtwork scene="invasion" className="invasion-illustration" original={invader} alt="Артист в красных церемониальных доспехах"/>
      <h1 ref={focusHeading} tabIndex={-1} className="scenario-description invasion-description">{message?<NativeSpeech text={message} className="scenario-result-description"/>:<>В ваш мир вторгся<br/>артист у которого сегодня<br/>релиз</>}</h1>
-     <div className="scenario-prompt-bottom"><img className="invasion-title" src={invasionLettering} alt="The Last Bachelor of Lothric" width={282} height={187} draggable={false}/>
+     <div className="scenario-prompt-bottom"><img className="invasion-title" src={invasionLettering} alt="The Last Bachelor of Lothric" width={564} height={373} draggable={false}/>
       <div className="scenario-actions"><button className="scenario-action scenario-action-primary" onClick={onChallenge}>Принять вызов</button><button className="scenario-action" onClick={onClose}>Отказаться</button></div>
      </div>
    </motion.section>;

@@ -5,29 +5,29 @@
       "name": "mimic-background",
       "source": "exec-77badc8f-3d74-4c0b-bd9c-7be8b7ce2c67.png",
       "prompt": "Edit the supplied image into an environment-only clean background plate for layered parallax. Remove the woman completely including all her armor, crown, hands, hair and blue veil. Reconstruct the gothic cathedral architecture naturally behind her: dark vaulted arch, stone columns, distant faint candles, cool desaturated blue grey light and subtle haze. Preserve the original camera, composition, exact portrait aspect ratio and canvas framing (1168 x 1436). No people, no foreground veil remnants, no text, no UI, no decorative external border. Detailed realistic dark fantasy, match original lighting and colors. Background must extend to all edges.",
-      "original": "mimic-background-v1.png",
-      "web": "../optimized/mimic-background-v1.webp"
+      "original": "mimic-background-v1.webp",
+      "web": "mimic-background-v1.webp"
     },
     {
       "name": "mimic-character",
       "source": "exec-be60be31-ff80-4db0-a50f-9a6c8a8f7628.png",
       "prompt": "Create a precise transparent-background foreground cutout of the woman in this reference for a layered parallax scene. Keep the original full portrait canvas, aspect ratio 1168x1436 and exact character scale and position, no recentering or cropping. Preserve her identity, expression, crown, hair, all armor, hands and flowing blue veil strands with natural soft alpha transparency through thin veil. Remove ALL cathedral architecture, candles and environment, leaving real alpha transparency, not a checkerboard or flat color. Preserve original cold lighting and photographic detail. No new objects, no text. The woman and her entire veil remain registered to original coordinates.",
-      "original": "mimic-character-v1.png",
-      "web": "../optimized/mimic-character-v1.webp"
+      "original": "mimic-character-v1.webp",
+      "web": "mimic-character-v1.webp"
     },
     {
       "name": "invasion-background",
       "source": "exec-1e0dfb37-e517-4d4f-890b-b524eca5e100.png",
       "prompt": "Edit supplied portrait into an environment-only clean background plate for layered parallax. Remove the central man completely including his hat, robes, hands, staff and hanging lantern. Remove all other hooded human figures too. Reconstruct the dark gothic cathedral behind them, elaborate pillars, red drapes, stained glass high windows, candles, faint red-orange ember haze. Preserve original camera framing, canvas portrait aspect ratio 1168x1436, original warm red gold colors, realistic dark fantasy detail and lighting. No people, no text, no UI or outer frame. Extend environment to all edges.",
-      "original": "invasion-background-v1.png",
-      "web": "../optimized/invasion-background-v1.webp"
+      "original": "invasion-background-v1.webp",
+      "web": "invasion-background-v1.webp"
     },
     {
       "name": "invasion-character",
       "source": "exec-7405ed33-98ea-4094-85eb-7bd62b83e181.png",
       "prompt": "Create a precise transparent-background foreground cutout of ONLY the central man in the supplied portrait. Preserve his identity, expression, exact pose and original scale and placement on full original portrait canvas aspect ratio 1168x1436. Include entire ceremonial hat, red gold embroidered robes, both hands, entire tall staff and hanging lantern on right. Remove all cathedral, candles, background hooded people and bottom foreground hooded heads. Use real alpha transparency, not checkerboard or a flat color. Keep original realistic detail and red-gold lighting. No recentering, no cropping, no text, no added objects; registration should match original full canvas so this layer aligns over reconstructed background.",
-      "original": "invasion-character-v1.png",
-      "web": "../optimized/invasion-character-v1.webp"
+      "original": "invasion-character-v1.webp",
+      "web": "invasion-character-v1.webp"
     }
   ]
 }

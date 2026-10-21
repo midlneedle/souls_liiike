@@ -1,7 +1,0 @@
-{
-  "tool": "image_gen built-in",
-  "prompt": "Use case: stylized-concept. Asset type: final square music single cover for fictional AI pop artist Velin, song «После нас». Create a convincing premium contemporary alternative pop album cover, not a parody. A fictional young adult male singer with short dark hair seen in a three-quarter portrait, standing alone at a deserted concrete seaside promenade after sunset, wind moving a charcoal coat, distant water and a pale cold horizon. Moody muted midnight blue, washed silver and a subtle warm burgundy accent, editorial analogue photography, fine film grain, natural anatomy, restrained atmospheric lighting, sharp detailed portrait and quietly cinematic composition. Elegant small typography: exactly 'VELIN' at the top and 'ПОСЛЕ НАС' at the bottom, with ample breathing room. No other text, no existing logos, no real celebrity likeness, no frame, no UI controls, no monsters. Full-bleed square image, opaque.",
-  "source": "source/velin-posle-nas.png",
-  "output": "../../public/assets/velin-posle-nas.webp",
-  "processing": "resize 768x768, WebP quality 85"
-}

@@ -42,10 +42,10 @@ body{background:#000}
 .ornate-close:active:not(:disabled){opacity:1;filter:drop-shadow(0 1px 2px #0009) brightness(1.1)}
 .mimic-frame-close{left:86%;top:6.8%;translate:-50% -50%}
 .mimic-frame-close:active{transform:scale(.94)}
-.mimic-lettering{position:absolute;left:-8%;right:-8%;bottom:calc(var(--mimic-play-size,112px) - 8px);text-align:center;color:#e8e6e3;z-index:2;font-weight:600;line-height:1;letter-spacing:-.04em;text-shadow:0 0 10px #0008;outline:none}
+.mimic-lettering{position:absolute;left:-8%;right:-8%;bottom:calc(var(--mimic-play-size,112px) - var(--mimic-play-lift,26px) + var(--mimic-lettering-gap,12px));text-align:center;color:#e8e6e3;z-index:2;font-weight:600;line-height:1;letter-spacing:-.04em;text-shadow:var(--mimic-shadow-x,0px) var(--mimic-shadow-y,0px) var(--mimic-shadow-blur,10px) var(--mimic-shadow-color,#0008);outline:none}
 .mimic-lettering span{display:block;font-size:20px;font-weight:600;line-height:1;white-space:nowrap;margin-bottom:4px}
 .mimic-lettering strong{display:block;font-size:60px;font-weight:600;line-height:1;letter-spacing:-.04em;white-space:nowrap}
-.mimic-play-anchor{position:absolute;left:50%;bottom:-20px;width:32%;min-width:96px;max-width:132px;aspect-ratio:1;transform:translateX(-50%);z-index:3}
+.mimic-play-anchor{position:absolute;left:50%;bottom:calc(0px - var(--mimic-play-lift,26px));width:32%;min-width:96px;max-width:132px;aspect-ratio:1;transform:translateX(-50%);z-index:3}
 .scenario-play{position:absolute;inset:0;width:100%;height:100%;padding:0;border-radius:50%;display:grid;place-items:center;isolation:isolate;touch-action:manipulation}
 .scenario-play:before{content:'';position:absolute;inset:4px;z-index:-1;border-radius:50%;background:url('../textures/optimized/play-disc-mimic.webp') center/100% 100% no-repeat}
 .scenario-play:after{content:'';position:absolute;left:50%;top:50%;width:139.725%;height:139.725%;transform:translate(-50%,-50%);background:url('../textures/play_button_rim.webp') center/contain no-repeat;pointer-events:none;z-index:1}
@@ -53,7 +53,8 @@ body{background:#000}
 .mimic-play-anchor.biting .scenario-play{visibility:hidden}
 .mimic-play-anchor.biting.phase-warning .scenario-play{visibility:visible;opacity:0}
 .mimic-play-anchor .mimic-canvas{left:50%;top:50%;transform:translate(-50%,-50%);z-index:2}
-.scenario-app .bottom-ui{background:#000;font-family:'Source Serif Pro',Georgia,serif}
+.scenario-app .bottom-ui{background:transparent;isolation:isolate;font-family:'Source Serif Pro',Georgia,serif}
+.scenario-app .bottom-ui::before{content:'';position:absolute;inset:-80px 0 0;z-index:-1;pointer-events:none;background:linear-gradient(to bottom,transparent 0%,#0008 24%,#000e 48%,#000 76%)}
 .scenario-app .mini-player{height:var(--mini-player-height)}
 .scenario-app .mini-strip{height:calc(var(--mini-player-height) - 32px)}
 .scenario-app .mini-card:before{background-size:contain}
@@ -61,9 +62,12 @@ body{background:#000}
 .scenario-app .mini-title span,.scenario-app .dock{font-family:Inter,Arial,sans-serif;letter-spacing:-.04em}
 .scenario-app .scenario-prompt{padding-top:var(--safe-top)}
 .scenario-description{font-size:20px;line-height:1.02;font-weight:500;letter-spacing:-.04em;text-align:center;color:#d4d2cf;outline:none}
+.scenario-result-description.native-speech{width:100%;height:auto;min-height:2.04em;display:grid;align-items:center;justify-items:center;overflow:visible;font:inherit;letter-spacing:inherit;color:inherit;text-shadow:inherit}
+.scenario-result-description .native-speech-lines{width:100%;line-height:inherit}
 .scenario-prompt-bottom{position:absolute;left:calc(24px + env(safe-area-inset-left,0px));right:calc(24px + env(safe-area-inset-right,0px));bottom:calc(var(--safe-bottom) + 52px);z-index:2}
 .scenario-actions{display:grid;gap:12px;margin-top:36px}
 .scenario-action{position:relative;display:grid;place-items:center;height:74px;min-height:74px;width:100%;padding:12px;font-family:inherit;font-size:24px;font-weight:500;line-height:1;letter-spacing:-.04em;border-radius:8px;color:#d9d7d2;background:transparent}
+.scenario-prompt .scenario-action:not(.scenario-action-primary){opacity:.6}
 .scenario-action-primary:before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(135deg,#fff0 10%,#fff 100%);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;-webkit-mask-composite:xor;pointer-events:none}
 .dislike-character{position:absolute;inset:12% 0 auto;height:51%;pointer-events:none}
 .dislike-character .battle-stage{transform:scale(1.18);transform-origin:center}
@@ -90,3 +94,15 @@ body{background:#000}
 @media(min-width:600px){.scenario-app{height:min(900px,100svh)}}
 @media(max-width:390px){.mimic-lettering strong{font-size:clamp(44px,15.38vw,60px)}.mimic-lettering span{font-size:clamp(16px,5.128vw,20px)}}
 @media(max-height:720px){.scenario-menu{padding-top:calc(var(--safe-top) + 24px);padding-bottom:calc(var(--safe-bottom) + 20px);gap:16px}.scenario-menu-options{gap:6px}.scenario-prompt-bottom{bottom:calc(var(--safe-bottom) + 18px)}.scenario-actions{margin-top:22px;gap:4px}.invasion-title{margin-bottom:24px}.invasion-description{top:calc(var(--safe-top) + 24px)}.mimic-content{padding-bottom:14px}.mimic-hero{width:min(calc(100% - 44px),calc((var(--app-height) - var(--bottom-space) - var(--safe-top) - var(--safe-bottom) - 50px)*.648))}.mimic-lettering strong{font-size:48px}.mimic-lettering span{font-size:17px}}
+
+/* The portrait keeps its original resolution; only the two mouth halves move. */
+.scene-character-motion{position:absolute;inset:0}
+.scene-artwork[data-character-hidden=true]>.scene-original{opacity:0;transition:opacity .22s ease-out}
+.mimic-taunt{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center bottom;pointer-events:none;mask-image:linear-gradient(#000 80%,transparent 100%)}
+.photo-mimic-anchor .scenario-play{z-index:3}
+.photo-mimic{position:absolute;width:330%;left:-124%;bottom:-196%;aspect-ratio:1145/1374;pointer-events:none;z-index:4;transform-origin:50% 47%;overflow:visible}
+.photo-mimic img{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:contain;transform-origin:36% 44.5%;pointer-events:none}
+.photo-mimic-upper{clip-path:inset(0 0 55.5% 0)}
+.photo-mimic-lower{clip-path:inset(53.5% 0 0 0)}
+.photo-mimic-anchor.phase-parried .scenario-play{filter:drop-shadow(0 0 12px #fff9)}
+@media(prefers-reduced-motion:reduce){.scene-character-motion{transform:none!important}.photo-mimic-upper{transform:none!important}.photo-mimic-lower{transform:translateY(-9%)!important}}

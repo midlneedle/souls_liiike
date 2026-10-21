@@ -9,18 +9,18 @@ import {asset} from './data';
 import type {Track} from './data';
 import {Icon} from './ui';
 import BattleStage from './BattleStage';
-export default function DuelView({track,onSaved,onClose,initialHealth=1,onHealthChange,goal='save'}:{track:Track;onSaved:()=>void;onClose:()=>void;initialHealth?:number;onHealthChange?:(health:number)=>void;goal?:'save'|'dislike'}){
+export default function DuelView({track,onSaved,onLost,onClose,initialHealth=1,onHealthChange,goal='save'}:{track:Track;onSaved:()=>void;onLost?:()=>void;onClose:()=>void;initialHealth?:number;onHealthChange?:(health:number)=>void;goal?:'save'|'dislike'}){
  const startingHealth=useRef(initialHealth),healthRef=useRef(onHealthChange);healthRef.current=onHealthChange;
  const duel=useRef(new Duel()),arena=useRef<HTMLDivElement>(null),present=useRef(true),isPresent=useIsPresent();present.current=isPresent;
  const [graphics,setGraphics]=useState(false),[forming,setForming]=useState(false),[event,setEvent]=useState<BattleEvent|null>(null),[heartReturning,setHeartReturning]=useState(false),[heartTop,setHeartTop]=useState('68%');
  const [,render]=useState(0),saved=useRef(false),timers=useRef<ReturnType<typeof setTimeout>[]>([]),reduced=useReducedMotion();
- const closeRef=useRef(onClose),saveRef=useRef(onSaved);closeRef.current=onClose;saveRef.current=onSaved;
+ const closeRef=useRef(onClose),saveRef=useRef(onSaved),lostRef=useRef(onLost);closeRef.current=onClose;saveRef.current=onSaved;lostRef.current=onLost;
  const input=useRef<SwordInput>({active:false,x:0,y:0,direction:'up',at:0});
  const respond=(result:DuelEvent|undefined)=>{
   if(!result)return;setEvent({type:result,at:performance.now()});render(n=>n+1);
   if(result==='hurt'||result==='lost')healthRef.current?.(duel.current.lives/3);
   if(result==='won'&&!saved.current){saved.current=true;saveRef.current();timers.current.push(setTimeout(()=>{if(present.current)setHeartReturning(true);},850));timers.current.push(setTimeout(()=>{if(present.current)closeRef.current();},1500));}
-  if(result==='lost')timers.current.push(setTimeout(()=>{if(present.current)closeRef.current();},1200));
+  if(result==='lost'&&!saved.current){saved.current=true;lostRef.current?.();timers.current.push(setTimeout(()=>{if(present.current)closeRef.current();},1200));}
  };
  const respondRef=useRef(respond);respondRef.current=respond;
  const pointer=useRef<{id:number;x:number;y:number;gesture:SlashGesture}|null>(null);

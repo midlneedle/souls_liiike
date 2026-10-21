@@ -5,10 +5,13 @@ import {MAX_HEALTH,RhythmGameState} from './rhythm/game';
 import type {Slash} from './rhythm/game';
 import type {RhythmAudio} from './rhythm/audio';
 import type {createRhythmScene} from './rhythm/scene';
+import InvasionBackdrop,{preloadInvasionArt} from './rhythm/InvasionBackdrop';
+import {useSceneMotion} from './scenarios/SceneEffects';
 
 const KEY_LANES:Record<string,number>={KeyA:0,KeyS:1,KeyD:2,Digit1:0,Digit2:1,Digit3:2,ArrowLeft:0,ArrowDown:1,ArrowRight:2,Space:1};
 
 export default function RhythmGame({audio,onClose}:{audio:RhythmAudio;onClose:(result?:{won:boolean;health:number;hits:number})=>void}){
+ const arena=useSceneMotion<HTMLElement>();
  const host=useRef<HTMLDivElement>(null),scene=useRef<ReturnType<typeof createRhythmScene>|null>(null),game=useRef(new RhythmGameState());
  const close=useRef(onClose);close.current=onClose;
  const reduced=useReducedMotion(),reducedRef=useRef(!!reduced);reducedRef.current=!!reduced;
@@ -27,9 +30,17 @@ export default function RhythmGame({audio,onClose}:{audio:RhythmAudio;onClose:(r
  const input=useRef({press,release});input.current={press,release};
  useEffect(()=>{
   let cancelled=false,frame=0,finishTimer:ReturnType<typeof setTimeout>|null=null;
-  import('./rhythm/scene.js').then(async module=>{
+  Promise.all([import('./rhythm/scene.js'),preloadInvasionArt()]).then(async ([module])=>{
    if(cancelled||!host.current)return;
-   scene.current=module.createRhythmScene(host.current,game.current.notes);
+   scene.current=module.createRhythmScene(host.current,game.current.notes,{
+    onPresentation:({attack,recoil,damage,finish})=>{
+     const element=arena.current;if(!element)return;
+     element.style.setProperty('--boss-attack',`${attack}`);
+     element.style.setProperty('--boss-recoil',`${recoil}px`);
+     element.style.setProperty('--battle-damage',`${damage}`);
+     element.style.setProperty('--boss-finish',`${finish}`);
+    },
+   });
    if(document.hidden)audio.pause();
    const started=await audio.start();if(cancelled)return;
    setStatus(started?'playing':audio.error?'error':'paused');
@@ -57,7 +68,8 @@ export default function RhythmGame({audio,onClose}:{audio:RhythmAudio;onClose:(r
   window.addEventListener('keydown',key);window.addEventListener('keyup',keyUp);window.addEventListener('blur',pause);document.addEventListener('visibilitychange',visibility);
   return()=>{cancelled=true;cancelAnimationFrame(frame);if(finishTimer)clearTimeout(finishTimer);inputs.current.clear();scene.current?.dispose();scene.current=null;window.removeEventListener('keydown',key);window.removeEventListener('keyup',keyUp);window.removeEventListener('blur',pause);document.removeEventListener('visibilitychange',visibility);};
  },[audio]);
- return <motion.section className={`rhythm-game rhythm-${status}`} role="region" aria-label="Звонарь. Три жизни. Слева синяя дорожка, в центре золотая, справа красная. Нажимай, когда камень окажется над полоской своей цветной плитки. Длинные клинки удерживай от острия до рукояти. Парные камни нажимай двумя пальцами. Колючие ловушки пропускай. Клавиши A S D или 1 2 3 можно нажимать и удерживать одновременно." initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:.45}}>
+ return <motion.section ref={arena} className={`rhythm-game rhythm-${status}`} role="region" aria-label="Вторжение артиста. Три жизни. Слева синяя дорожка, в центре золотая, справа красная. Нажимай, когда камень окажется над полоской своей цветной плитки. Длинные клинки удерживай от острия до рукояти. Парные камни нажимай двумя пальцами. Колючие ловушки пропускай. Клавиши A S D или 1 2 3 можно нажимать и удерживать одновременно." initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:.45}}>
+  <InvasionBackdrop paused={status==='paused'||status==='error'}/>
   <div ref={host} className="rhythm-scene" onPointerDown={e=>{
    if(e.button!==0||status!=='playing'||game.current.phase!=='playing')return;
    e.preventDefault();const bounds=e.currentTarget.getBoundingClientRect();
@@ -66,7 +78,8 @@ export default function RhythmGame({audio,onClose}:{audio:RhythmAudio;onClose:(r
   }} onPointerUp={e=>{e.preventDefault();input.current.release(`pointer:${e.pointerId}`);if(e.currentTarget.hasPointerCapture(e.pointerId))e.currentTarget.releasePointerCapture(e.pointerId);}}
   onPointerCancel={e=>input.current.release(`pointer:${e.pointerId}`,true)} onLostPointerCapture={e=>input.current.release(`pointer:${e.pointerId}`,true)} onContextMenu={e=>e.preventDefault()}/>
   <button className="rhythm-back" aria-label="Выйти из ритм-игры" onClick={()=>close.current()}><Icon name="back" size={28}/></button>
-  {status==='loading'&&<div className="rhythm-message" role="status"><span className="rhythm-loading"/>Пробуждаем звонаря…</div>}
+  <div className="rhythm-damage-shade" aria-hidden="true"/>
+  {status==='loading'&&<div className="rhythm-message" role="status"><span className="rhythm-loading"/>Артист готовится к выходу…</div>}
   {status==='paused'&&<button className="rhythm-message rhythm-resume" onClick={()=>{void audio.resume().then(ok=>setStatus(ok?'playing':'error')).catch(()=>setStatus('error'));}}>Продолжить</button>}
   {status==='error'&&<div className="rhythm-message" role="alert">Не удалось запустить игру.<button onClick={()=>close.current()}>Вернуться</button></div>}
  </motion.section>;

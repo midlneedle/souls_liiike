@@ -2,14 +2,6 @@
   "tool": "Built-in image_gen",
   "assets": [
     {
-      "file": "miniplayer_frame.webp",
-      "prompt": "Use case: stylized-concept. Create ONE production game UI asset: an empty elongated Gothic music miniplayer border on a genuinely transparent background. Input 1 is the exact metal ornament style reference; input 2 is the matching round button material reference. Reproduce that rough worn blackened silver metal, sharp thorn-like spikes, muted gray highlights, low saturation. Straight-on orthographic 2D UI texture, no perspective. The frame itself is a horizontal rounded rectangular outline with semicircular end caps, thin doubled metal rails across top/bottom, small symmetric four-point Gothic ornaments at top center and bottom center, thorn ornaments around left/right ends. Width to height of frame approximately 5:1, reserve padding around every spike. The interior opening MUST be entirely transparent and empty for live track title and buttons, exterior entirely transparent too. Frame strokes thin but legible at 360px wide, around 2-4px visual thickness at that display size. Balanced horizontal symmetry. No text, no music controls, no hearts, no icons, no backgrounds, no floor, no glow cloud, no gold, no colored accents. Use a wide landscape canvas, frame centered and occupying most of canvas width.",
-      "references": [
-        "ornament.webp",
-        "stroke_for_big_play_button.webp"
-      ]
-    },
-    {
       "file": "play_button_rim.webp",
       "prompt": "Use case: precise-object-edit. Asset: reusable circular Gothic playback button rim, separate from its icon. Edit the supplied round button texture: remove the center stone disk and play triangle completely so the ENTIRE round interior is genuinely transparent. Keep the reference's thin double circular ring of weathered blackened silver, carved rough metallic grain and small sharp thorn spikes at the four cardinal points and along the circumference. Keep nearly circular proportions, no perspective, orthographic front view, symmetric. Render a single rim centered on square transparent canvas with safe padding outside all spikes. High quality detailed matte distressed silver matching the existing asset, grayscale, restrained highlights. The circular hole must be large and completely empty, no material, no text, no buttons, no icons, no second ring asset, no black background, no outer glow. The ornament image is a supporting material reference. Production alpha UI texture.",
       "references": [

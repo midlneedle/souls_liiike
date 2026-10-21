@@ -32,6 +32,4 @@ export const entities: Entity[] = [
 for(const entity of entities)entity.color=gothicPalette(entity.id).glowAccent;
 export const getTrack = (id: string) => tracks.find(t => t.id === id);
 export const entityTracks = (e: Entity) => e.trackIDs.map(getTrack).filter((t): t is Track => !!t);
-export const mimicTrack = getTrack('velin-posle-nas')!;
 export const flowTrapTrack = getTrack('burzum-dunkelheit')!;
-export function replacement(e: Entity): Entity { return { ...e, kind: 'playlist', title: mimicTrack.title, cover: mimicTrack.cover ?? undefined, color: gothicPalette('mimic').glowAccent, trackIDs: [mimicTrack.id, ...e.trackIDs.filter(id => id !== mimicTrack.id)] }; }

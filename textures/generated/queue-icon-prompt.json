@@ -6,6 +6,5 @@
     "Flow_icon.webp",
     "pause_icon.webp"
   ],
-  "source": "source/queue-icon.png",
   "conversion": "Lossless WebP, crop 160 256 960 768, resize width 256, preserve alpha"
 }

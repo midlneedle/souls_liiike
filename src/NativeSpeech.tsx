@@ -4,7 +4,7 @@ import {STREAM,streamTimes,streamElapsed,streamPose,wrapSpeech} from './streamTe
 import type {StreamLine} from './streamText';
 type Line=StreamLine&{text:string};
 type Layout={source:string;lines:Line[];times:number[];height:number};
-export default function NativeSpeech({text}:{text:string}){
+export default function NativeSpeech({text,className=''}:{text:string;className?:string}){
  const root=useRef<HTMLDivElement>(null),group=useRef<HTMLDivElement>(null),reduced=useReducedMotion();
  const [current,setCurrent]=useState(text),[exiting,setExiting]=useState(false),[replay,setReplay]=useState(0);
  const [layout,setLayout]=useState<Layout|null>(null);
@@ -51,5 +51,5 @@ export default function NativeSpeech({text}:{text:string}){
   frame=requestAnimationFrame(tick);
   return()=>cancelAnimationFrame(frame);
  },[layout,ready,exiting,exitTarget,replay,reduced]);
- return <div className="native-speech" ref={root} aria-live="polite" aria-label={text} onClick={()=>{if(text===current&&!exiting)setReplay(value=>value+1);}}><div ref={group} className={`native-speech-lines stream-lines ${ready?'stream-ready':''}`} key={current} aria-hidden="true">{layout?.source===current&&layout.lines.map((line,i)=><div className="native-speech-line ready" key={i} style={{width:Math.ceil(line.width)}}><span>{Array.from(line.text).map((character,j)=><span className="stream-letter" data-index={line.first+j} key={j}>{character}</span>)}</span></div>)}</div></div>;
+ return <div className={`native-speech ${className}`} ref={root} aria-live="polite" aria-label={text} onClick={()=>{if(text===current&&!exiting)setReplay(value=>value+1);}}><div ref={group} className={`native-speech-lines stream-lines ${ready?'stream-ready':''}`} key={current} aria-hidden="true">{layout?.source===current&&layout.lines.map((line,i)=><div className="native-speech-line ready" key={i} style={{width:Math.ceil(line.width)}}><span>{Array.from(line.text).map((character,j)=><span className="stream-letter" data-index={line.first+j} key={j}>{character}</span>)}</span></div>)}</div></div>;
 }

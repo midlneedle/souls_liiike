@@ -63,7 +63,7 @@ export function createBattleModel({coverMap=null,woodMap=null}={}){
    gl_Position.xy=floor(gl_Position.xy/gl_Position.w*pixelGrid+0.5)/pixelGrid*gl_Position.w;`);};material.customProgramCacheKey=()=> 'ps1-battle-v1';}
  let previousTime=0;
  function pose(state,visual={intro:1,event:null,eventAge:10},reduced=false){
-  const intro=ease(visual.intro),phase=state.phase,won=phase==='won',lost=phase==='lost';
+  const phase=state.phase,won=phase==='won',lost=phase==='lost';
   const age=visual.eventAge,event=visual.event;
   const counter=(event==='countered'||event==='won')?Math.sin(clamp(age/.45)*Math.PI):0;
   const impact=clamp((state.elapsed-state.impactDelay+.42)/.42),windup=phase==='windup';
@@ -80,13 +80,14 @@ export function createBattleModel({coverMap=null,woodMap=null}={}){
   flesh.color.setHex(damage===2?0x4f5144:damage===1?0x60634e:0x696e59);
   cloth.color.setHex(damage===2?0x25221e:0x38332f);
   boss.position.set(reduced?0:-(state.lane-1)*36,-8*death,0);boss.rotation.set(0,reduced?0:Math.sin(state.time*1.4)*.03,stunned?.12:death*.65);boss.scale.setScalar(1-death*.45-counter*.045);boss.visible=death<.99;
-  body.scale.y=intro;body.position.y=(1-intro)*40;
+  // The boss is already standing; intro only controls the player weapon.
+  body.scale.y=1;body.position.y=0;
   body.position.y-=damage*5+hit*9;
   body.rotation.set(damage*.09+charge*.06-hit*.16,Math.sin(state.time*1.1)*.025,damage*.045+breath*.012-recoil*.12);
   body.scale.x=1+breath*.018;body.scale.z=1+breath*.025;
   skirt.scale.set(1,1-damage*.16,1);skirt.rotation.z=Math.PI+Math.sin(state.time*1.7)*.035;
-  head.pose({reveal:1,open:stunned?.7:windup?.15+.18*charge:.15,fold:0,coverScale:1,coverZ:30,replacement:0,recoil:0},'windup',state.time%1,172,true);
-  head.root.position.y=74+(1-intro)*-20-damage*6+breath*(1.5+damage)-hit*6;
+  head.pose({reveal:1,open:stunned?.7:windup?.15+.18*charge:.15,fold:0,coverScale:1,coverZ:-12,replacement:0,recoil:0},'windup',state.time%1,144,true);
+  head.root.position.y=74-damage*6+breath*(1.5+damage)-hit*6;
   head.root.rotation.z=(stunned?-.22:counter*.2)+damage*.07+breath*.018;
   head.root.rotation.x=damage*.06-charge*.07+hit*.15;
   torso.rotation.z=stunned?.12:0;

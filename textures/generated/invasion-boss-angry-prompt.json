@@ -1,0 +1,7 @@
+{
+  "tool": "Built-in image_gen",
+  "input": "invasion-character-v1.webp",
+  "output": "invasion-boss-angry-v1.webp",
+  "web": "invasion-boss-angry-v1.webp",
+  "prompt": "Use case: identity-preserve / background-extraction. Edit target: supplied transparent portrait of our dark fantasy invader boss. Create an ANGRY combat variant of exactly this same recognizable man, same face, hair, ornate red-and-gold mitre, heavily embroidered crimson robes, necklaces, staff and hanging red lantern. Photorealistic cinematic dark fantasy photograph, not a 3D game model. His brows are drawn tightly, eyes glare straight at the viewer, lips parted in a controlled furious snarl, body leaning slightly forward, left open hand raised as if hurling a spell down the track. Natural anatomically correct hands, no added weapons. Keep the right-hand staff and lantern. Preserve the full original portrait canvas aspect ratio 1168x1436, relative character scale and positioning; head and hat should be fully visible, lower robe extends to bottom edge. Maintain warm red firelight, blackened metal and aged gold, same material detail as reference. Real transparent alpha background, absolutely no cathedral or other people, no baked particles, no text, no border or UI. Keep the character photographic and sharp."
+}

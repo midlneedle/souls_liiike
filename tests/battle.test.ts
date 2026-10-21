@@ -28,8 +28,16 @@ test('all attack types keep articulated geometry finite at every cue stage',()=>
 test('victory ends the boss and hands the heart back after sheathing',()=>{
  const m=createBattleModel(),d=new Duel();d.phase='won';m.pose(d,{intro:1,event:'won',eventAge:.9});assert.equal(m.sword.visible,false);m.pose(d,{intro:1,event:'won',eventAge:1.2});assert.equal(m.boss.visible,false);m.dispose();
 });
-test('boss body unfolds below an intact track head',()=>{
- const m=createBattleModel(),d=new Duel();m.pose(d,{intro:0,event:null,eventAge:10});assert.equal(m.body.scale.y,0);m.pose(d,{intro:1,event:null,eventAge:10});assert.equal(m.body.scale.y,1);assert.equal(m.head.cover.visible,true);assert.ok(m.head.root.position.y>m.body.position.y);m.dispose();
+test('boss stands fully formed from the first frame while the weapon arrives',()=>{
+ const m=createBattleModel(),d=new Duel();
+ m.pose(d,{intro:0,event:null,eventAge:10});const y=m.head.root.position.y;
+ assert.equal(m.body.scale.y,1);assert.equal(m.body.position.y,0);assert.equal(m.sword.visible,false);
+ m.pose(d,{intro:1,event:null,eventAge:10});assert.equal(m.body.scale.y,1);assert.equal(m.head.root.position.y,y);assert.equal(m.sword.visible,true);m.dispose();
+});
+test('track artwork sits behind the jaws and ahead of the mouth cavity',()=>{
+ const m=createBattleModel(),d=new Duel();
+ for(const phase of ['ready','windup','stunned'] as const){d.phase=phase;m.pose(d,{intro:1,event:null,eventAge:10});assert.equal(m.head.cover.visible,true);assert.ok(m.head.cover.position.z<0);assert.ok(m.head.cover.position.z> -25);assert.ok(m.head.cover.scale.x<166);}
+ m.dispose();
 });
 
 test('three health states progressively expose wounds and collapse the posture',()=>{

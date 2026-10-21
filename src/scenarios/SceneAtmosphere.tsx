@@ -5,7 +5,7 @@ const vertex=`attribute vec2 position;varying vec2 uv;void main(){uv=position*.5
 const fragment=`precision highp float;
 varying vec2 uv;
 uniform vec2 resolution;
-uniform float time,intensity,warm,definition,density,wind,glow;
+uniform float time,intensity,warm,definition,density,wind,glow,particles,particleSpeed,particleSize,particleGlow;
 uniform vec3 tint;
 float hash(float n){return fract(sin(n*127.1)*43758.5453);}
 float noise(vec2 p){
@@ -79,12 +79,13 @@ void main(){
   float a=(energy*.5+bloom*.19+filaments*.13*(.3+edge))*envelope;
   vec3 blue=mix(tint,vec3(.65,.87,1.),clamp(energy*.45,0.,.65));
   color=blue*a;alpha=a*.8;
-  for(int i=0;i<16;i++){
-   float id=float(i),age=fract(hash(id+40.)+time*(.015+hash(id+5.)*.016));
+  for(int i=0;i<40;i++){
+   float id=float(i);if(id+.5>particles)continue;
+   float age=fract(hash(id+40.)+time*particleSpeed*(.015+hash(id+5.)*.016));
    float x=fract(hash(id+80.)+sin(age*5.+id+time*.1)*.07);
    vec2 delta=(uv-vec2(x,age))*resolution;
-   float r=max(.9,resolution.y/550.);
-   float spark=exp(-dot(delta,delta)/(r*r))*sin(age*3.14159)*.7;
+   float r=max(.9,resolution.y/550.*particleSize);
+   float spark=exp(-dot(delta,delta)/(r*r))*sin(age*3.14159)*particleGlow;
    color+=mix(tint,vec3(.7,.9,1.),.5)*spark;alpha+=spark*.7;
   }
  }
@@ -95,7 +96,7 @@ void main(){
 }`;
 
 /** Transparent WebGL: magic behind Mimic, crisp ash in front of the invader. */
-type Props={theme:'mimic'|'invasion';intensity:number;speed:number;color:string;definition:number;density:number;wind:number;glow:number};
+type Props={theme:'mimic'|'invasion';intensity:number;speed:number;color:string;definition:number;density:number;wind:number;glow:number;particles:number;particleSpeed:number;particleSize:number;particleGlow:number};
 export default function SceneAtmosphere(props:Props){
  const {theme,intensity,speed,color,definition,density,wind,glow}=props;
  const host=useRef<HTMLDivElement>(null),settings=useRef(props),repaint=useRef<(()=>void)|null>(null),reduced=useReducedMotion();
@@ -113,7 +114,7 @@ export default function SceneAtmosphere(props:Props){
   gl.useProgram(program);
   const buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
   const attr=gl.getAttribLocation(program,'position');gl.enableVertexAttribArray(attr);gl.vertexAttribPointer(attr,2,gl.FLOAT,false,0,0);
-  const uniforms=Object.fromEntries(['resolution','time','intensity','warm','tint','definition','density','wind','glow'].map(n=>[n,gl.getUniformLocation(program,n)]));
+  const uniforms=Object.fromEntries(['resolution','time','intensity','warm','tint','definition','density','wind','glow','particles','particleSpeed','particleSize','particleGlow'].map(n=>[n,gl.getUniformLocation(program,n)]));
   let frame=0,last=0,elapsed=0,disposed=false;
   const draw=(now:number)=>{
    if(disposed||document.hidden||gl.isContextLost())return;
@@ -126,6 +127,8 @@ export default function SceneAtmosphere(props:Props){
    gl.uniform3f(uniforms.tint,((c>>16)&255)/255,((c>>8)&255)/255,(c&255)/255);
    gl.uniform1f(uniforms.definition,v.definition);gl.uniform1f(uniforms.density,v.density);
    gl.uniform1f(uniforms.wind,v.wind);gl.uniform1f(uniforms.glow,v.glow);
+   gl.uniform1f(uniforms.particles,v.particles);gl.uniform1f(uniforms.particleSpeed,v.particleSpeed);
+   gl.uniform1f(uniforms.particleSize,v.particleSize);gl.uniform1f(uniforms.particleGlow,v.particleGlow);
    gl.drawArrays(gl.TRIANGLES,0,6);
   };
   repaint.current=()=>{last=0;draw(performance.now());};
@@ -136,6 +139,6 @@ export default function SceneAtmosphere(props:Props){
   const observer=new ResizeObserver(resize);observer.observe(parent);parent.appendChild(canvas);resize();if(!document.hidden)frame=requestAnimationFrame(draw);
   return()=>{disposed=true;repaint.current=null;cancelAnimationFrame(frame);observer.disconnect();document.removeEventListener('visibilitychange',visibility);canvas.removeEventListener('webglcontextlost',contextLost);canvas.remove();gl.deleteBuffer(buffer);cleanup();gl.getExtension('WEBGL_lose_context')?.loseContext();};
  },[theme,reduced]);
- useEffect(()=>{if(reduced)repaint.current?.();},[intensity,speed,color,definition,density,wind,glow,reduced]);
+ useEffect(()=>{if(reduced)repaint.current?.();},[intensity,speed,color,definition,density,wind,glow,props.particles,props.particleSpeed,props.particleSize,props.particleGlow,reduced]);
  return <div ref={host} className="scene-atmosphere" aria-hidden="true"/>;
 }

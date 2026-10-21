@@ -1,8 +1,17 @@
-.rhythm-game{position:absolute;inset:0;z-index:12;overflow:hidden;background:linear-gradient(#080a0cdb,#10111266 50%,#08090bcc);touch-action:none;user-select:none;-webkit-user-select:none}
-.rhythm-scene{position:absolute;inset:0;touch-action:none}
+.rhythm-game{position:absolute;inset:0;z-index:12;isolation:isolate;overflow:hidden;background:#100706;touch-action:none;user-select:none;-webkit-user-select:none;font-family:'Source Serif Pro',Georgia,serif;letter-spacing:-.04em}
+.rhythm-invasion-backdrop{position:absolute;inset:0;overflow:hidden;pointer-events:none;transition:filter .3s ease}
+.rhythm-cathedral{position:absolute;inset:-14px;width:calc(100% + 28px);height:calc(100% + 28px);object-fit:cover;object-position:50% 25%;filter:brightness(.65) saturate(.8);transform:translate3d(calc(var(--scene-x,0px)*-1),calc(var(--scene-y,0px)*-1),0)}
+.rhythm-boss-window{position:absolute;left:0;right:0;top:calc(var(--safe-top) + 24px);height:70%;mask-image:linear-gradient(#000 60%,#000b 75%,transparent 100%);-webkit-mask-image:linear-gradient(#000 60%,#000b 75%,transparent 100%)}
+.rhythm-boss-reaction{width:100%;height:100%;transform-origin:50% 80%;transform:translate3d(var(--boss-recoil,0px),calc(var(--boss-finish,0)*28px),0) scale(calc(1 + var(--boss-attack,0)*.025));opacity:calc(1 - var(--boss-finish,0)*.85);filter:brightness(calc(1 + var(--boss-attack,0)*.08)) saturate(calc(1 - var(--boss-finish,0)*.6))}
+.rhythm-boss-photo{width:100%;height:100%;object-fit:contain;object-position:50% 0;transform:translate3d(calc(var(--scene-x,0px)*.55),calc(var(--scene-y,0px)*.55),0);filter:drop-shadow(0 0 16px #0009)}
+.rhythm-firelight{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 58%,#ec531518,transparent 57%),radial-gradient(ellipse at 92% 38%,#fa6c221c,transparent 42%);mix-blend-mode:screen;opacity:calc(.55 + var(--boss-attack,0)*.45)}
+.rhythm-ground-shade{position:absolute;inset:0;background:linear-gradient(transparent 35%,#12080655 58%,#080505d9 100%),linear-gradient(90deg,#0008,transparent 20%,transparent 80%,#0008)}
+.rhythm-scene{position:absolute;inset:0;touch-action:none;mask-image:linear-gradient(transparent 32%,#000 48%);-webkit-mask-image:linear-gradient(transparent 32%,#000 48%)}
 .rhythm-scene canvas{display:block;width:100%;height:100%}
+.rhythm-damage-shade{position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,transparent 35%,#a61e0f);opacity:calc(var(--battle-damage,0)*.6)}
+.rhythm-paused .rhythm-invasion-backdrop,.rhythm-error .rhythm-invasion-backdrop{filter:brightness(.45)}
 .rhythm-back{position:absolute;left:18px;top:calc(var(--safe-top) + 16px);width:44px;height:44px;display:grid;place-items:center;color:#e5ddca;opacity:.75;z-index:2}
-.rhythm-message{position:absolute;left:32px;right:32px;top:45%;text-align:center;font-size:22px;line-height:1.1;color:#e4ddce;text-shadow:0 2px 8px #000}
+.rhythm-message{position:absolute;left:32px;right:32px;top:42%;z-index:3;text-align:center;font-size:24px;line-height:1.1;font-weight:500;color:#e4ddce;text-shadow:0 2px 8px #000}
 .rhythm-message button{display:block;margin:24px auto;color:inherit;font:inherit;padding:12px 24px}
 .rhythm-resume{padding:24px 0}
 .rhythm-loading{display:block;width:36px;height:36px;margin:0 auto 24px;border:2px solid #b7a27c33;border-top-color:#d8bc8b;border-radius:50%;animation:rhythm-loading 1.2s linear infinite}
@@ -12,3 +21,4 @@
 @keyframes rhythm-hold{to{transform:scale(.8);filter:drop-shadow(0 0 12px #c79c5d)}}
 @keyframes rhythm-loading{to{transform:rotate(360deg)}}
 @media(prefers-reduced-motion:reduce){.app[data-rhythm-active=true]>.companion{transform:none;transition:none}.flow-play.holding>.playback-glyph,.rhythm-loading{animation:none}}
+@media(prefers-reduced-motion:reduce){.rhythm-boss-reaction{transform:none}.rhythm-invasion-backdrop{transition:none}}

@@ -47,6 +47,6 @@ for(const file of readdirSync(path.join(root,'src'))){
 const themedAssets=readFileSync(path.join(root,'src/gothicAssets.ts'),'utf8');
 for(const match of themedAssets.matchAll(/from '(\.\.\/textures\/[^']+)'/g))if(!existsSync(path.resolve(root,'src',match[1])))throw Error(`Missing Gothic texture: ${match[1]}`);
 for(const font of ['SourceSerifPro-Regular.otf','SourceSerifPro-Semibold.otf'])if(!existsSync(path.join(root,'font',font)))throw Error(`Missing font: ${font}`);
-if(!existsSync(path.join(root,'public/music/bellkeeper.mp3')))throw Error('Missing rhythm audio excerpt');
+if(!existsSync(path.join(root,'public/music/bellkeeper.m4a')))throw Error('Missing rhythm audio excerpt');
 if(cat.includes('scenario-menu-options')||cat.includes('aria-modal'))throw Error('Video must be a separate page, not an overlay on the menu');
 console.log('Menu, scenarios and separate video page render; video plays inline; assets exist.');

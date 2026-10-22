@@ -9,4 +9,9 @@ import './gothic.css';
 import './rhythm.css';
 import './scenarios.css';
 initializeHaptics();
-createRoot(document.getElementById('root')!).render(<React.StrictMode><MotionConfig reducedMotion="user"><App /></MotionConfig></React.StrictMode>);
+async function mount(){
+ let content=<App/>;
+ if(import.meta.env.DEV){const {default:LocalControls}=await import('./MimicDialKit.dev');content=<LocalControls>{content}</LocalControls>;}
+ createRoot(document.getElementById('root')!).render(<React.StrictMode><MotionConfig reducedMotion="user">{content}</MotionConfig></React.StrictMode>);
+}
+void mount();

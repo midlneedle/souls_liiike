@@ -1,0 +1,16 @@
+.dislike-video-preview{position:absolute;inset:0;pointer-events:none;overflow:hidden;isolation:isolate;mask-image:linear-gradient(#000 50%,#000b 65%,transparent 87%)}
+.dislike-video-preview img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(.95)}
+.dislike-preview-original{transition:opacity .45s ease}
+.dislike-video-preview[data-layered=true] .dislike-preview-original{opacity:0}
+.dislike-preview-layers{position:absolute;inset:0;animation:dislike-layers-in .6s ease both}
+.dislike-preview-background{transform:scale(1.04)}
+.dislike-preview-boss{position:absolute;inset:0;transform-origin:50% 86%;filter:drop-shadow(0 12px 14px #0006)}
+.dislike-preview-boss img{object-fit:cover}
+.dislike-video-preview[data-moving=true] .dislike-preview-background{animation:dislike-cathedral-drift 12s ease-in-out infinite}
+.dislike-video-preview[data-moving=true] .dislike-preview-boss{animation:dislike-boss-breath var(--boss-motion-time,5.6s) ease-in-out infinite}
+.dislike-video-preview>.scene-atmosphere{z-index:1}
+.dislike-video-preview::after{content:'';position:absolute;inset:0;z-index:2;background:linear-gradient(#000 0%,#000 7%,transparent 19%),radial-gradient(ellipse at 50% 43%,transparent 35%,#0006 100%)}
+@keyframes dislike-layers-in{from{opacity:0}to{opacity:1}}
+@keyframes dislike-cathedral-drift{0%,100%{transform:scale(1.04) translate(2px,-1px)}50%{transform:scale(1.055) translate(-3px,2px)}}
+@keyframes dislike-boss-breath{0%,100%{transform:translate(0,0) scale(1) rotate(-.25deg)}50%{transform:translate(var(--boss-sway,4px),calc(-1*var(--boss-lift,8px))) scale(1.025) rotate(.3deg)}}
+@media(prefers-reduced-motion:reduce){.dislike-video-preview[data-moving=true] .dislike-preview-background,.dislike-video-preview[data-moving=true] .dislike-preview-boss,.dislike-preview-layers{animation:none}.dislike-preview-original{transition:none}}

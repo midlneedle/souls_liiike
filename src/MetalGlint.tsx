@@ -13,13 +13,14 @@ void main(){uv=texcoord;screenUV=position*.5+.5;gl_Position=vec4(position,0.,1.)
 const fragment=`precision highp float;
 varying vec2 uv,screenUV;
 uniform sampler2D material;
-uniform float sweep,beamWidth,tilt,strength;
+uniform float sweep,beamWidth,tilt,strength,occluder;
 uniform vec2 imageFit;
 uniform vec3 tint;
 void main(){
   vec2 imageUV=(uv-.5)/imageFit+.5;
   if(any(lessThan(imageUV,vec2(0.)))||any(greaterThan(imageUV,vec2(1.))))discard;
   vec4 surface=texture2D(material,imageUV);
+  if(occluder>.5){gl_FragColor=vec4(0.,0.,0.,surface.a*strength);return;}
   float metal=dot(surface.rgb,vec3(.2126,.7152,.0722));
   float mask=surface.a*smoothstep(.12,.42,metal);
   // Screen coordinates give every object the same physical sweep of light.
@@ -28,7 +29,7 @@ void main(){
   float alpha=mask*reflection*strength;
   gl_FragColor=vec4(tint*alpha,alpha);
 }`;
-type Surface={el:HTMLElement;src:string;pseudo?:'rim'|'ornament'|'player'};
+type Surface={el:HTMLElement;src:string;pseudo?:'rim'|'ornament'|'player';occluder?:boolean};
 type Texture={texture:WebGLTexture;image:HTMLImageElement;ready:boolean};
 
 // One context and one clock for all metal; DOM geometry follows carousel rotations and swipes.
@@ -62,7 +63,7 @@ export default function MetalGlint(){
   gl.enableVertexAttribArray(texcoord);gl.vertexAttribPointer(texcoord,2,gl.FLOAT,false,16,8);
   gl.enable(gl.BLEND);gl.blendFunc(gl.ONE,gl.ONE_MINUS_SRC_ALPHA);
   gl.uniform1i(gl.getUniformLocation(program,'material'),0);
-  const uniforms=Object.fromEntries(['sweep','beamWidth','tilt','strength','imageFit','tint'].map(n=>[n,gl.getUniformLocation(program,n)]));
+  const uniforms=Object.fromEntries(['sweep','beamWidth','tilt','strength','imageFit','tint','occluder'].map(n=>[n,gl.getUniformLocation(program,n)]));
   const textures=new Map<string,Texture>();
   const textureFor=(src:string)=>{
    const cached=textures.get(src);if(cached)return cached;
@@ -101,6 +102,12 @@ export default function MetalGlint(){
     const image=el instanceof HTMLImageElement?el:el.querySelector('img');
     if(image)surfaces.push({el,src:image.currentSrc||image.src});
    });
+   // Erase only the reflection behind the intact portrait, using its real alpha silhouette.
+   // The screen, dock and player keep their normal DOM stacking and playback state.
+   root.querySelectorAll<HTMLImageElement>('.photo-screamer img').forEach(el=>{
+    const src=el.currentSrc||el.src;textureFor(src);
+    surfaces.push({el,src,occluder:true});
+   });
    const styleCache=new Map<HTMLElement,CSSStyleDeclaration>();
    const styleFor=(el:HTMLElement)=>{let s=styleCache.get(el);if(!s){s=getComputedStyle(el);styleCache.set(el,s);}return s;};
    gl.enable(gl.SCISSOR_TEST);
@@ -136,7 +143,9 @@ export default function MetalGlint(){
     const ratio=canvas.width/bounds.width;
     gl.scissor(Math.floor((left-bounds.left)*ratio),Math.floor((bounds.bottom-bottom)*canvas.height/bounds.height),Math.ceil((right-left)*ratio),Math.ceil((bottom-top)*canvas.height/bounds.height));
     gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(vertices),gl.DYNAMIC_DRAW);
-    gl.bindTexture(gl.TEXTURE_2D,tex.texture);gl.uniform1f(uniforms.strength,v.intensity*opacity);
+    gl.blendFunc(surface.occluder?gl.ZERO:gl.ONE,gl.ONE_MINUS_SRC_ALPHA);
+    gl.uniform1f(uniforms.occluder,surface.occluder?1:0);
+    gl.bindTexture(gl.TEXTURE_2D,tex.texture);gl.uniform1f(uniforms.strength,(surface.occluder?1:v.intensity)*opacity);
     const aspect=width/height,imageAspect=tex.image.naturalWidth/tex.image.naturalHeight;
     gl.uniform2f(uniforms.imageFit,pseudo==='player'?1:Math.min(1,imageAspect/aspect),pseudo==='player'?1:Math.min(1,aspect/imageAspect));
     gl.drawArrays(gl.TRIANGLES,0,6);

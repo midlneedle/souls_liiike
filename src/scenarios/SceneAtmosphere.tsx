@@ -90,6 +90,21 @@ void main(){
    color+=mix(tint,vec3(.7,.9,1.),.5)*spark;alpha+=spark*.7;
   }
  }
+ if(warm>1.5){
+  // Drifting firelit smoke hugs the floor and sides, leaving the boss readable.
+  vec2 p=uv*vec2(4.5,7.);
+  float warp=fbm(p+vec2(time*.09,-time*.12));
+  float smoke=fbm(p*1.7+warp*1.8-vec2(time*.05,time*.19));
+  float sides=smoothstep(.1,.48,abs(uv.x-.5));
+  float floorMist=1.-smoothstep(.03,.48,uv.y);
+  float envelope=smoothstep(0.,.08,uv.y)*(1.-smoothstep(.78,1.,uv.y));
+  float mist=pow(smoke,2.)*(sides*.11+floorMist*.17)*envelope;
+  float beamPath=.95-(1.-uv.y)*.7;
+  float beam=exp(-pow((uv.x-beamPath)/.085,2.))*(.4+warp*.6)*.019*envelope;
+  float heat=(.65+.35*sin(time*.7+uv.y*4.))*floorMist*sides*.012;
+  float a=mist+beam+heat;
+  color+=mix(tint,vec3(1.,.73,.34),.45)*a;alpha+=a;
+ }
  if(warm>.5){
   float opacity=1.-exp(-alpha*intensity);
   gl_FragColor=vec4(color/max(alpha,.0001)*opacity,opacity);
@@ -97,7 +112,7 @@ void main(){
 }`;
 
 /** Transparent WebGL: magic behind Mimic, crisp ash in front of the invader. */
-type Props={theme:'mimic'|'invasion';intensity:number;speed:number;color:string;definition:number;density:number;wind:number;glow:number;particles:number;particleSpeed:number;particleSize:number;particleGlow:number};
+type Props={theme:'mimic'|'invasion'|'boss';intensity:number;speed:number;color:string;definition:number;density:number;wind:number;glow:number;particles:number;particleSpeed:number;particleSize:number;particleGlow:number};
 export default function SceneAtmosphere(props:Props){
  const {theme,intensity,speed,color,definition,density,wind,glow}=props;
  const host=useRef<HTMLDivElement>(null),settings=useRef(props),repaint=useRef<(()=>void)|null>(null),reduced=useReducedMotion();
@@ -123,7 +138,7 @@ export default function SceneAtmosphere(props:Props){
    if(last&&now-last<1000/30)return;
    const dt=last?Math.min((now-last)/1000,.1):0;last=now;if(!reduced)elapsed+=dt*settings.current.speed;
    gl.uniform2f(uniforms.resolution,canvas.width,canvas.height);gl.uniform1f(uniforms.time,elapsed);
-   gl.uniform1f(uniforms.intensity,settings.current.intensity);gl.uniform1f(uniforms.warm,theme==='invasion'?1:0);
+   gl.uniform1f(uniforms.intensity,settings.current.intensity);gl.uniform1f(uniforms.warm,theme==='mimic'?0:theme==='boss'?2:1);
    const v=settings.current,c=parseInt(v.color.slice(1),16);
    gl.uniform3f(uniforms.tint,((c>>16)&255)/255,((c>>8)&255)/255,(c&255)/255);
    gl.uniform1f(uniforms.definition,v.definition);gl.uniform1f(uniforms.density,v.density);

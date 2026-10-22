@@ -44,6 +44,15 @@ body{background:#000}
 .mimic-frame-close:active{transform:scale(.94)}
 .mimic-lettering{position:absolute;left:50%;width:calc(var(--app-width,100vw) - 32px);transform:translateX(-50%);bottom:calc(var(--mimic-play-size,112px) - var(--mimic-play-lift,26px) + var(--mimic-lettering-gap,12px));text-align:center;color:#e8e6e3;z-index:2;font-weight:600;line-height:1;letter-spacing:-.04em;text-shadow:var(--mimic-shadow-x,0px) var(--mimic-shadow-y,0px) var(--mimic-shadow-blur,10px) var(--mimic-shadow-color,#0008);outline:none}
 .mimic-lettering img{display:block;width:100%;height:auto}
+.mimic-live-lettering{display:grid;gap:4px;pointer-events:none}
+.mimic-lettering-caption{font-size:clamp(16px,4vw,20px);font-weight:600;text-transform:uppercase;line-height:1}
+.mimic-lettering-title.native-speech{display:grid;place-items:center;width:100%;height:2em;min-height:0;overflow:visible;font:inherit;font-size:clamp(30px,10vw,60px);font-weight:600;line-height:1;letter-spacing:-.04em;color:inherit;text-shadow:inherit}
+.mimic-lettering-title .native-speech-lines{width:100%;line-height:inherit}
+.mimic-lettering-title .native-speech-line{height:1em;line-height:1}
+.mimic-poison{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,color-mix(in srgb,var(--mimic-poison) 60%,transparent),transparent 72%);mix-blend-mode:screen}
+.mimic-illustration .scene-background{transition:filter .9s ease}
+.is-captured .mimic-illustration .scene-background{filter:hue-rotate(-105deg) saturate(1.45)}
+.mimic-takeover .photo-mimic{z-index:5;bottom:-210%}
 .mimic-play-anchor{position:absolute;left:50%;bottom:calc(0px - var(--mimic-play-lift,26px));width:32%;min-width:96px;max-width:132px;aspect-ratio:1;transform:translateX(-50%);z-index:3}
 .scenario-play{position:absolute;inset:0;width:100%;height:100%;padding:0;border-radius:50%;display:grid;place-items:center;isolation:isolate;touch-action:manipulation}
 .scenario-play:before{content:'';position:absolute;inset:4px;z-index:-1;border-radius:50%;background:url('../textures/optimized/play-disc-mimic.webp') center/100% 100% no-repeat}

@@ -1,0 +1,8 @@
+Generated with the built-in imagegen tool.
+Source: dislike-boss-ready.webp
+
+CHARACTER
+Use case: background-extraction. Asset type: aligned transparent foreground layer for a mobile dark fantasy boss scene. Edit target: supplied 720x1280 image. Extract ONLY the enormous central gold armored boss AND his huge hammer, preserving their exact pose, silhouette, scale, screen positions, lighting and battered armor detail. Transparent background. Remove cathedral, floor, HUD, player's foreground sword, player's shield and player hands. Reconstruct small boss parts occluded by player sword/shield naturally. Keep whole boss and hammer in same full portrait canvas 9:16, no repositioning or cropping beyond source. No new character, no text, no frame. Actual alpha transparency.
+
+BACKGROUND
+Use case: precise-object-edit. Asset type: background plate for layered mobile boss scene. Edit target supplied portrait. Remove central armored boss and his hammer completely. Remove player's sword, shield, hands, all foreground weapons and the tiny health bar HUD at top. Seamlessly reconstruct the empty ruined cathedral interior and stone floor behind them. Preserve original vertical 9:16 framing, perspective, gothic arches, pale daylight shafts from right windows, dark green-gray walls and realistic cinematic game lighting. No people, creatures, weapons, text or interface. Empty cathedral background only, matching the exact original camera.

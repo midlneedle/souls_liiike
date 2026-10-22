@@ -8,13 +8,14 @@ import {Icon} from './ui';
 import MiniPlayer from './MiniPlayer';
 import MetalGlint from './MetalGlint';
 import StoneBackground from './StoneBackground';
-const loadDuel=()=>import('./DuelView');
+const loadDuel=()=>import('./VideoDuel');
 const DuelView=lazy(loadDuel);
 const loadRhythm=()=>import('./RhythmGame');
 const RhythmGame=lazy(loadRhythm);
 import {RhythmAudio,preloadRhythmAudio} from './rhythm/audio';
 import MimicHome from './scenarios/MimicHome';
 import DislikePreview from './scenarios/DislikePreview';
+import {preloadVideoDuel} from './battle/videoAssets';
 import CatVideo from './scenarios/CatVideo';
 import {invader,invasionLettering} from './scenarios/assets';
 import {focusHeading} from './scenarios/focus';
@@ -62,7 +63,7 @@ export default function ScenarioApp({initialScreen='menu'}:{initialScreen?:Scree
  },[fighting,rhythm]);
  useEffect(()=>{
   // Fetch game code/resources while the player is reading the challenge screen.
-  if(screen==='dislike')void Promise.all([loadDuel(),import('./battle/scene.js')]).catch(()=>{});
+  if(screen==='dislike'){void loadDuel().catch(()=>{});return preloadVideoDuel();}
   if(screen==='invasion')void Promise.all([loadRhythm(),import('./rhythm/scene.js'),preloadRhythmAudio(),import('./rhythm/InvasionBackdrop').then(module=>module.preloadInvasionArt())]).catch(()=>{});
  },[screen]);
  const startDuel=(track:Track)=>{if(pending)return;const ticket=++launch.current;setPending(true);void withDeadline(loadDuel()).then(()=>{if(ticket!==launch.current)return;setPending(false);setBattleTrack(track);setNotice('');setFighting(true);}).catch(()=>{if(ticket===launch.current){setPending(false);setNotice('Не удалось запустить бой. Попробуй ещё раз.');}});};
@@ -85,9 +86,9 @@ export default function ScenarioApp({initialScreen='menu'}:{initialScreen?:Scree
     {screen==='mimic'&&<MimicHome key="mimic" playing={playing} onPlayingChange={setPlaying} onClose={()=>choose('menu')}/>}
     {screen==='video'&&<CatVideo key="video" onClose={()=>choose('menu')}/>}
     {screen==='dislike'&&<motion.section key="dislike" className="scenario-prompt dislike-prompt scenario-screen" aria-label="Дизлайк" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:.3}}>
-     {!fighting&&<DislikePreview track={battleTrack}/>}
-     <div className="scenario-prompt-bottom"><h1 ref={focusHeading} tabIndex={-1} className="scenario-description">{notice&&screen==='dislike'?<NativeSpeech text={notice} className="scenario-result-description"/>:<>Дизлайк нужно заслужить.<br/>Победи в сражении с треком.</>}</h1>
-      <div className="scenario-actions"><button className="scenario-action scenario-action-primary" disabled={pending} aria-busy={pending} onClick={()=>startDuel(flowTrapTrack)}>{pending?'Готовим бой…':'Вызвать на бой'}</button><button className="scenario-action" onClick={()=>choose('menu')}>Пусть играет</button></div>
+     {!fighting&&<DislikePreview won={notice==='Дизлайк заслужен.'}/>}
+     <div className="scenario-prompt-bottom"><h1 ref={focusHeading} tabIndex={-1} className="scenario-description">{notice&&screen==='dislike'?<NativeSpeech text={notice} className="scenario-result-description"/>:<>Дизлайк нужно заслужить.<br/>Победи в сражении с боссом.</>}</h1>
+      <div className="scenario-actions"><button className="scenario-action scenario-action-primary" disabled={pending} aria-busy={pending} onClick={()=>startDuel(flowTrapTrack)}>Вызвать на бой</button><button className="scenario-action" onClick={()=>choose('menu')}>Пусть играет</button></div>
      </div>
     </motion.section>}
     {screen==='invasion'&&<InvasionScreen key="invasion" onChallenge={enterRhythm} pending={pending} onClose={()=>choose('menu')} message={notice}/>}
@@ -99,11 +100,11 @@ export default function ScenarioApp({initialScreen='menu'}:{initialScreen?:Scree
    {notice&&screen!=='dislike'&&screen!=='invasion'&&<div className="scenario-notice" role="status">{notice}</div>}
   </div>
   </SceneEffectsContext.Provider>
-  <Suspense fallback={null}><AnimatePresence>{fighting&&<DuelView key={battleTrack.id} track={battleTrack} goal="dislike" initialHealth={1} onSaved={()=>setNotice('Дизлайк заслужен.')} onLost={()=>setNotice('На этот раз — без дизлайка.')} onClose={()=>setFighting(false)}/>}</AnimatePresence></Suspense>
+  <Suspense fallback={null}><AnimatePresence>{fighting&&<DuelView key={battleTrack.id} onSaved={()=>setNotice('Дизлайк заслужен.')} onLost={()=>setNotice('На этот раз — без дизлайка.')} onClose={()=>setFighting(false)}/>}</AnimatePresence></Suspense>
   <SceneEffectsContext.Provider value={{...sceneEffects,magic,ash,suspended:false}}>
    <Suspense fallback={null}><AnimatePresence>{rhythm&&<RhythmGame audio={rhythm} onClose={closeRhythm}/>}</AnimatePresence></Suspense>
   </SceneEffectsContext.Provider>
-  {fighting&&<button className="scenario-battle-back" aria-label="Вернуться из боя" onClick={()=>setFighting(false)}><Icon name="back" size={28}/></button>}
+
  </main>;
 }
 
